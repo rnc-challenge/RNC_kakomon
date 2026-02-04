@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>過去問チャレンジ</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        #root {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // 問題データ
+        const quizData = [
+  {
+    "question": "問340　65歳男性。身長178cm、体重75kg。食道がんの術前・術後の栄養管理に栄養サポートチーム（NST）が介入することになった。術前においては、本患者の食道に通過障害はあるものの、水分摂取は可能で食道以外に障害はなかった。術後においても、水分摂取は可能であった。この患者に対する栄養療法に関する記述として適切なのはどれか。2つ選べ。",
+    "question2": "",
+    "category": "リハ栄養",
+    "choices": [
+      "術前の栄養管理は、経腸栄養療法は実施できない。",
+      "術後の栄養管理には、経腸栄養療法が適している。",
+      "末梢静脈栄養療法では1日で必要な糖質量を摂取できる。",
+      "経腸栄養剤としては、消化態栄養剤よりも半消化態栄養剤の方が適している。",
+      "経腸栄養療法よりも中心静脈栄養療法の方が感染性リスクは少ない。"
+    ],
+    "answer": "2, 4",
+    "exam": "薬剤師国家試験",
+    "year": "R6 (2024) 年度",
+    "examRound": "第110回薬剤師国家試験問題",
+    "explanation": "（検討中）"
+  },
+  ...（中略：あなたが提供した quizData の残り）...
+];
+        // （以降のスクリプトはそのまま）
+    </script>
+</body>
+</html>
