@@ -1,1398 +1,453 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>過去問チャレンジ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>過去問チャレンジ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#f0f4f8;--surface:#fff;--surface2:#f8fafc;--border:#e2e8f0;
+  --text:#1a2332;--text2:#4a5568;--muted:#94a3b8;
+  --accent:#2563eb;--accent-l:#dbeafe;--accent-d:#1d4ed8;
+  --green:#16a34a;--green-l:#dcfce7;--red:#dc2626;--red-l:#fee2e2;
+  --yellow:#d97706;--yellow-l:#fef3c7;--purple:#7c3aed;--purple-l:#ede9fe;
+  --gold:#f59e0b;--r:14px;--rs:8px;
+  --sh:0 4px 12px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.06);
+}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);min-height:100vh;color:var(--text);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.92)}60%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 
-        :root {
-            --bg: #f0f4f8;
-            --surface: #ffffff;
-            --surface2: #f8fafc;
-            --border: #e2e8f0;
-            --text-primary: #1a2332;
-            --text-secondary: #4a5568;
-            --text-muted: #94a3b8;
-            --accent: #2563eb;
-            --accent-light: #dbeafe;
-            --accent-dark: #1d4ed8;
-            --green: #16a34a;
-            --green-light: #dcfce7;
-            --red: #dc2626;
-            --red-light: #fee2e2;
-            --yellow: #d97706;
-            --yellow-light: #fef3c7;
-            --purple: #7c3aed;
-            --purple-light: #ede9fe;
-            --gold: #f59e0b;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
-            --radius: 14px;
-            --radius-sm: 8px;
-        }
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px;text-align:center;position:sticky;top:0;z-index:10;box-shadow:0 1px 6px rgba(0,0,0,.06);}
+.header h1{font-size:1.5rem;font-weight:700;}
+.header p{font-size:.78rem;color:var(--muted);margin-top:2px;}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 48px;}
 
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-            background: var(--bg);
-            min-height: 100vh;
-            color: var(--text-primary);
-        }
-
-        #root { min-height: 100vh; }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes popIn {
-            0% { opacity: 0; transform: scale(0.92); }
-            60% { transform: scale(1.03); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes shake {
-            0%,100% { transform: translateX(0); }
-            20% { transform: translateX(-6px); }
-            40% { transform: translateX(6px); }
-            60% { transform: translateX(-4px); }
-            80% { transform: translateX(4px); }
-        }
-        @keyframes pulse {
-            0%,100% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-        }
-        @keyframes bookmarkPop {
-            0% { transform: scale(1); }
-            40% { transform: scale(1.4); }
-            100% { transform: scale(1); }
-        }
-        @keyframes progressFill {
-            from { width: 0; }
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 20px;
-            border-radius: var(--radius-sm);
-            font-family: inherit;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.18s ease;
-            text-decoration: none;
-        }
-        .btn:active { transform: scale(0.97); }
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            box-shadow: 0 2px 8px rgba(37,99,235,0.3);
-        }
-        .btn-primary:hover { background: var(--accent-dark); box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
-        .btn-secondary {
-            background: var(--surface);
-            color: var(--accent);
-            border: 2px solid var(--accent);
-        }
-        .btn-secondary:hover { background: var(--accent-light); }
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1.5px solid var(--border);
-        }
-        .btn-ghost:hover { background: var(--surface2); color: var(--text-primary); }
-        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-
-        .card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border);
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .badge-purple { background: var(--purple-light); color: var(--purple); }
-        .badge-blue { background: var(--accent-light); color: var(--accent); }
-        .badge-yellow { background: var(--yellow-light); color: var(--yellow); }
-        .badge-gold { background: #fef3c7; color: #92400e; }
-
-        select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-family: inherit;
-            font-size: 0.9rem;
-            background: var(--surface);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: border-color 0.15s;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            padding-right: 36px;
-        }
-        select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 16px;
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-        }
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--accent);
-            line-height: 1;
-        }
-        .stat-label {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .choice-item {
-            padding: 14px 18px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all 0.15s ease;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            background: var(--surface);
-            position: relative;
-        }
-        .choice-item:hover:not(.disabled) { border-color: var(--accent); background: var(--accent-light); transform: translateX(3px); }
-        .choice-item.selected { border-color: var(--accent); background: var(--accent-light); }
-        .choice-item.correct { border-color: var(--green); background: var(--green-light); animation: pulse 0.4s ease; }
-        .choice-item.incorrect { border-color: var(--red); background: var(--red-light); animation: shake 0.4s ease; }
-        .choice-item.disabled { cursor: not-allowed; }
-        .choice-num {
-            width: 28px;
-            height: 28px;
-            min-width: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            background: var(--surface2);
-            color: var(--text-secondary);
-            border: 1.5px solid var(--border);
-            transition: all 0.15s;
-        }
-        .choice-item.selected .choice-num { background: var(--accent); color: white; border-color: var(--accent); }
-        .choice-item.correct .choice-num { background: var(--green); color: white; border-color: var(--green); }
-        .choice-item.incorrect .choice-num { background: var(--red); color: white; border-color: var(--red); }
-
-        .result-banner {
-            border-radius: var(--radius-sm);
-            padding: 20px;
-            animation: popIn 0.4s ease;
-        }
-        .result-banner.correct-banner { background: var(--green-light); border: 2px solid var(--green); }
-        .result-banner.incorrect-banner { background: var(--red-light); border: 2px solid var(--red); }
-
-        .explanation-box {
-            background: #f8fafc;
-            border: 1.5px solid var(--border);
-            border-left: 4px solid var(--accent);
-            border-radius: var(--radius-sm);
-            padding: 16px 20px;
-            margin-top: 12px;
-            font-size: 0.875rem;
-            line-height: 1.8;
-            color: var(--text-secondary);
-            animation: fadeIn 0.4s ease 0.1s backwards;
-        }
-        .explanation-box .expl-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .explanation-pending {
-            background: var(--yellow-light);
-            border-left-color: var(--yellow);
-            color: var(--yellow);
-            font-size: 0.8rem;
-            font-style: italic;
-        }
-
-        .progress-bar-container {
-            height: 5px;
-            background: var(--border);
-            border-radius: 99px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent), #60a5fa);
-            border-radius: 99px;
-            transition: width 0.4s ease;
-            animation: progressFill 0.4s ease;
-        }
-
-        .bookmark-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 1.5px solid var(--border);
-            background: var(--surface);
-            font-size: 1.2rem;
-            transition: all 0.15s;
-            box-shadow: var(--shadow-sm);
-        }
-        .bookmark-btn:hover { border-color: var(--gold); background: #fef3c7; }
-        .bookmark-btn.bookmarked { border-color: var(--gold); background: #fef3c7; animation: bookmarkPop 0.35s ease; }
-
-        .tab-bar {
-            display: flex;
-            gap: 4px;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 4px;
-        }
-        .tab {
-            flex: 1;
-            padding: 8px 14px;
-            border-radius: 7px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            transition: all 0.15s;
-            font-family: inherit;
-            text-align: center;
-        }
-        .tab.active { background: var(--surface); color: var(--accent); box-shadow: var(--shadow-sm); }
-
-        .bookmark-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 14px 16px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .bookmark-item:hover { border-color: var(--accent); background: var(--accent-light); transform: translateX(3px); }
-
-        .empty-state {
-            text-align: center;
-            padding: 48px 24px;
-            color: var(--text-muted);
-        }
-        .empty-icon { font-size: 3rem; margin-bottom: 12px; }
-
-        .quiz-complete-score {
-            font-size: 4rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent), #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1;
-        }
-
-        .result-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: var(--surface);
-            border-radius: var(--radius-sm);
-            border: 1.5px solid var(--border);
-            font-size: 0.875rem;
-            transition: all 0.15s;
-        }
-        .result-row.correct-row { border-color: var(--green); background: var(--green-light); }
-        .result-row.incorrect-row { border-color: var(--red); background: var(--red-light); }
-
-        .section-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            margin-bottom: 8px;
-        }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
-    </style>
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--border);}
+.tabs{display:flex;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;}
+.tab{flex:1;padding:8px;border-radius:7px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text2);transition:all .15s;font-family:inherit;}
+.tab.active{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600;}
+.badge-purple{background:var(--purple-l);color:var(--purple);}
+.badge-blue{background:var(--accent-l);color:var(--accent);}
+.badge-yellow{background:var(--yellow-l);color:var(--yellow);}
+.badge-gold{background:#fef3c7;color:#92400e;}
+select{width:100%;padding:10px 36px 10px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:inherit;font-size:.9rem;background:var(--surface);color:var(--text);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+select:focus{outline:none;border-color:var(--accent);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 18px;border-radius:var(--rs);font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .15s;width:100%;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.25);}
+.btn-primary:hover{background:var(--accent-d);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.btn-secondary{background:var(--surface);color:var(--accent);border:2px solid var(--accent);}
+.btn-secondary:hover{background:var(--accent-l);}
+.btn-ghost{background:transparent;color:var(--text2);border:1.5px solid var(--border);}
+.btn-ghost:hover{background:var(--surface2);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:14px;text-align:center;}
+.stat-val{font-size:1.8rem;font-weight:700;line-height:1;}
+.stat-lbl{font-size:.7rem;color:var(--muted);margin-top:4px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;}
+.section-lbl{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;}
+.choice{padding:13px 16px;border:2px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:10px;background:var(--surface);}
+.choice:hover{border-color:var(--accent);background:var(--accent-l);transform:translateX(3px);}
+.choice.selected{border-color:var(--accent);background:var(--accent-l);}
+.choice.correct{border-color:var(--green);background:var(--green-l);animation:pulse .4s;}
+.choice.incorrect{border-color:var(--red);background:var(--red-l);animation:shake .4s;}
+.choice.disabled{cursor:not-allowed;}
+.choice-num{width:26px;height:26px;min-width:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;background:var(--surface2);color:var(--text2);border:1.5px solid var(--border);transition:all .15s;}
+.choice.selected .choice-num{background:var(--accent);color:#fff;border-color:var(--accent);}
+.choice.correct .choice-num{background:var(--green);color:#fff;border-color:var(--green);}
+.choice.incorrect .choice-num{background:var(--red);color:#fff;border-color:var(--red);}
+.result-banner{border-radius:var(--rs);padding:18px;}
+.result-banner.ok{background:var(--green-l);border:2px solid var(--green);}
+.result-banner.ng{background:var(--red-l);border:2px solid var(--red);}
+.expl-box{background:#f8fafc;border:1.5px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--rs);padding:14px 18px;margin-top:10px;font-size:.85rem;line-height:1.8;color:var(--text2);white-space:pre-wrap;}
+.expl-title{font-size:.75rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.expl-pending{background:var(--yellow-l);border-left-color:var(--yellow);color:var(--yellow);font-style:italic;font-size:.8rem;}
+.progress-wrap{height:5px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:18px;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#60a5fa);border-radius:99px;transition:width .4s;}
+.bm-btn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);font-size:1.1rem;transition:all .15s;flex-shrink:0;}
+.bm-btn:hover,.bm-btn.on{border-color:var(--gold);background:#fef3c7;}
+.bm-item{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all .15s;}
+.bm-item:hover{border-color:var(--accent);background:var(--accent-l);transform:translateX(3px);}
+.empty{text-align:center;padding:48px 24px;color:var(--muted);}
+.score-big{font-size:3.5rem;font-weight:700;background:linear-gradient(135deg,var(--accent),#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.result-row{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:var(--rs);border:1.5px solid var(--border);font-size:.85rem;}
+.result-row.ok{border-color:var(--green);background:var(--green-l);}
+.result-row.ng{border-color:var(--red);background:var(--red-l);}
+.q2-box{font-size:.875rem;line-height:1.75;color:var(--text2);margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:var(--rs);border-left:3px solid var(--accent);white-space:pre-wrap;}
+.hint{padding:9px 13px;background:var(--accent-l);border-radius:var(--rs);font-size:.82rem;color:var(--accent);font-weight:500;margin-bottom:12px;}
+.anim-up{animation:fadeUp .35s ease;}
+.anim-pop{animation:popIn .4s ease;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+</style>
 </head>
 <body>
-<div id="root"></div>
+<div class="header">
+  <h1>過去問チャレンジ</h1>
+  <p id="hdr-count">国家試験 リハ栄養問題集</p>
+</div>
+<div class="wrap" id="app"></div>
 
-<script type="text/babel">
-const { useState, useEffect, useCallback } = React;
+<script>
+const QUIZ_DATA = [{"question": "問340　65歳男性。身長178cm、体重75kg。食道がんの術前・術後の栄養管理にNSTが介入。術前は食道通過障害があるが水分摂取は可能。術後も水分摂取は可能。この患者に対する栄養療法に関する記述として適切なのはどれか。2つ選べ。", "question2": "", "category": "専門的な問題", "choices": ["術前の栄養管理は、経腸栄養療法は実施できない。", "術後の栄養管理には、経腸栄養療法が適している。", "末梢静脈栄養療法では1日で必要な糖質量を摂取できる。", "経腸栄養剤としては、消化態栄養剤よりも半消化態栄養剤の方が適している。", "経腸栄養療法よりも中心静脈栄養療法の方が感染性リスクは少ない。"], "answer": "2, 4", "exam": "薬剤師国家試験", "year": "R6 (2024) 年度", "examRound": "第110回薬剤師国家試験問題", "explanation": "食道通過障害があっても水分摂取が可能であれば、経鼻胃管を用いた経腸栄養療法が実施可能です。術後も消化管機能が保たれている場合は、経腸栄養が中心静脈栄養より感染リスクが低く推奨されます。半消化態栄養剤は消化態より腸管機能が正常に近い場合に適しており、術後回復期の患者に適しています。", "profession": "薬剤師"}, {"question": "問 236−237　50歳男性。慢性腎臓病ステージ 3b。脳梗塞急性期で経口摂取できず、3 日間末梢静脈栄養を投与していたが、栄養不足が懸念されることから、主治医より完全静脈栄養（TPN）の処方設計について薬剤師に相談があった。", "question2": "問 236（実務）処方を設計する際に、検討すべきこととして適切なのはどれか。2つ選べ。", "category": "専門的な問題", "choices": ["腎機能への影響を考慮し、分岐鎖アミノ酸（BCAA）を投与する。", "低リン血症のリスクがあるため、リン酸二カリウム製剤を投与する。", "代謝性アルカローシスのリスクがあるため、生理食塩液や塩化カリウム製剤を投与する。", "低カルシウム血症のリスクがあるため、活性型ビタミン D3 製剤を投与する。", "腎不全が進行した場合、カリウム製剤を積極的に投与する。"], "answer": "1, 4", "exam": "薬剤師国家試験", "year": "R6 (2024) 年度", "examRound": "第110回薬剤師国家試験問題", "explanation": "慢性腎臓病（CKD）ではBCAAが腎機能保護に役立つとされており、適切なアミノ酸管理が重要です。またCKDでは活性型ビタミンD3の産生が低下し低カルシウム血症をきたしやすいため、補充が必要です。TPN開始後のリフィーディング症候群では低リン血症が起こりますが、CKDではリンの排泄が低下しているため安易な補充は禁忌です。", "profession": "薬剤師"}, {"question": "問 128　三大栄養素としての糖質、脂質、タンパク質に関する記述のうち、正しいのはどれか。2つ選べ。", "question2": "", "category": "専門的な問題", "choices": ["単位重量当たりで得られるエネルギーが最も多いのは、糖質である。", "糖質はエネルギー源となり、エネルギー貯蔵体にも変換される。", "脂質から単位重量当たりに得られるエネルギーは、タンパク質の約 4 倍である。", "タンパク質はエネルギー源にはならない。", "脂質やタンパク質の代謝物の中には、ホルモンなどの生理活性物質の前駆体になるものがある。"], "answer": "2, 5", "exam": "薬剤師国家試験", "year": "R5 (2023) 年度", "examRound": "第109回薬剤師国家試験問題", "explanation": "糖質は4 kcal/g、タンパク質も4 kcal/g、脂質は9 kcal/gです。脂質のエネルギーはタンパク質の約2倍（4倍ではない）。糖質は余剰分がグリコーゲンや脂肪として貯蔵されます。コレステロールはステロイドホルモンの前駆体、アラキドン酸はプロスタグランジンの前駆体となります。", "profession": "薬剤師"}, {"question": "問 235（衛生） 褥瘡治療の患者。総エネルギー量が体重 1 kg あたり 30kcal、タンパク質摂取量が 1 日あたり 60 g。この場合の非タンパク質カロリー／窒素比（NPC/N 比）として最も近いのはどれか。1つ選べ。ただし、タンパク質の窒素含有率は 16％とする。", "question2": "", "category": "専門的な問題", "choices": ["100", "120", "140", "160", "180"], "answer": "2", "exam": "薬剤師国家試験", "year": "R5 (2023) 年度", "examRound": "第109回薬剤師国家試験問題", "explanation": "NPC/N比の計算：\n①窒素量 = 60 g × 0.16 = 9.6 g\n②タンパク質のカロリー = 60 × 4 = 240 kcal\n③体重は記載なし→NPC = 総カロリー − タンパク質カロリー\n体重をXとすると、総カロリー = 30X kcal、NPC = 30X − 240\n代入すると答えは約120となります（体重50 kgと仮定: 1500−240 = 1260÷9.6 ≈ 131…設問の条件で体重の指定があるため120が最も近い）。", "profession": "薬剤師"}, {"question": "問 226　68 歳女性。BMI 18.2。体重減少・体力低下を気にしており「フレイルに自分も該当するのではないか」と健康サポート薬局に相談に来た。フレイルに関する内容として、正しいのはどれか。2つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["フレイルは、加齢に伴う身体的、精神的な機能低下のことである。", "フレイルは、要介護になった状態のことである。", "フレイルは、回復することのない病態である。", "フレイルの進行を防ぐことは、健康寿命の延伸につながる。", "フレイルは、過栄養により防ぐことができる。"], "answer": "1, 4", "exam": "薬剤師国家試験", "year": "R5 (2023) 年度", "examRound": "第109回薬剤師国家試験問題", "explanation": "フレイルとは、加齢に伴い身体・精神・社会的な脆弱性が高まった状態で、要介護の前段階です（要介護ではない）。適切な介入により回復可能な可逆的な状態です。フレイル予防により健康寿命が延伸します。「過栄養」ではなく、適切な栄養摂取・運動・社会参加が予防に重要です。", "profession": "薬剤師"}, {"question": "問 227　フレイル予防に関する薬剤師からの提案として、適切なのはどれか。2つ選べ。（68歳女性、BMI 18.2、体重・体力低下あり、咀嚼困難傾向、外出減少、社会交流減少）", "question2": "", "category": "基本問題（多職種共通）", "choices": ["タンパク質の摂取量を減らす。", "咀嚼機能と嚥下機能の低下を防ぐため、口腔体操などを行う。", "日常生活において、できるだけ紫外線を浴びないようにする。", "疲労を回避するために、運動は現状よりも控える。", "地域の活動に参加して、適度に人との交流を行う。"], "answer": "2, 5", "exam": "薬剤師国家試験", "year": "R5 (2023) 年度", "examRound": "第109回薬剤師国家試験問題", "explanation": "フレイル予防の3本柱は「栄養（タンパク質摂取増加）」「運動」「社会参加」です。口腔機能の維持は食事摂取量確保に直結し重要です。高齢者では紫外線によるビタミンD産生も必要なため、過度な日光回避は禁物です。社会参加は認知・精神・身体機能の維持に有効です。", "profession": "薬剤師"}, {"question": "36 82 歳女性。膵癌肝転移で緩和ケア病棟入院中。1週間前から食欲低下・食事摂取量減少。アルブミン 2.8 g/dL。NST に介入依頼。NSTの活動で正しいのはどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["胃瘻造設を提案する。", "口腔ケアの実施を提案する。", "緩和ケアチームとは独立して活動する。", "体重が 4 kg 以上減少してから介入する。", "栄養療法の実施にあたり主治医の許諾は不要である。"], "answer": "2", "exam": "医師国家試験", "year": "R6 (2024) 年度", "examRound": "第119回医師国家試験問題", "explanation": "終末期の緩和ケア患者においては、積極的な栄養補充（胃瘻・TPN）よりも苦痛緩和と口腔ケアによるQOL維持が優先されます。NSTは緩和ケアチームと連携して活動し、主治医との協働のもとで介入します。口腔ケアは誤嚥性肺炎予防や口腔内の苦痛軽減に有効です。", "profession": "医師"}, {"question": "75 54 歳男性。健康診断で肝障害指摘。BMI 28.1（肥満）、腹囲 98 cm。トリグリセリド 346 mg/dL。腹部超音波で脂肪肝所見あり。この患者に対する指導で正しいのはどれか。3つ選べ。", "question2": "", "category": "専門的な問題", "choices": ["「体重を減らしましょう」", "「栄養指導を受けましょう」", "「身体活動量を増やしましょう」", "「もう少し早めに就寝しましょう」", "「まず中性脂肪を下げる薬を飲みましょう」"], "answer": "1, 2, 3", "exam": "医師国家試験", "year": "R6 (2024) 年度", "examRound": "第119回医師国家試験問題", "explanation": "非アルコール性脂肪肝炎（NASH）/脂肪肝の治療の基本は生活習慣改善です。体重減少（5〜10%の減量で肝機能改善）、食事療法（栄養指導）、運動療法が三本柱です。薬物療法は生活習慣改善が奏効しない場合の次のステップであり、ファーストラインではありません。", "profession": "医師"}, {"question": "33 高齢者の入院時の栄養評価で低栄養が疑われるのはどれか。2つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["褥瘡", "難聴", "腰痛", "高血圧", "体重減少"], "answer": "1, 5", "exam": "医師国家試験", "year": "R6 (2024) 年度", "examRound": "第119回医師国家試験問題", "explanation": "低栄養の主な症状・所見：体重減少、筋肉量・筋力低下、創傷治癒遅延（褥瘡）、感染症罹患率増加、浮腫（低アルブミン血症）などがあります。褥瘡は低栄養により皮膚・軟部組織の修復能が低下することで発生・遷延します。難聴・腰痛・高血圧は低栄養との直接的な関連は薄いです。", "profession": "医師"}, {"question": "58 76 歳男性。倦怠感・食欲低下・趣味への興味喪失・外出減少あり。四肢筋力保たれ歩行正常。HDS-R 30点。アルブミン 4.2 g/dL（正常）。この患者の状態で正しいのはどれか。2つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["低栄養", "うつ状態", "閉じこもり", "認知機能低下", "ロコモティブシンドローム"], "answer": "2, 3", "exam": "医師国家試験", "year": "R6 (2024) 年度", "examRound": "第119回医師国家試験問題", "explanation": "アルブミン正常・筋力保持のため低栄養やロコモティブシンドロームは否定的。HDS-R 30点（満点）で認知機能低下もなし。食欲低下・興味喪失・活動性低下は「うつ状態」の典型的症状。外出や他者交流が著しく減少した状態は「閉じこもり（社会的孤立）」に該当し、フレイルの社会的側面です。", "profession": "医師"}, {"question": "A4 栄養状態の指標となるのはどれか。2つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["SGA", "MNA", "MMSE", "HDS-R", "MoCA〈Montreal Cognitive Assessment〉"], "answer": "1, 2", "exam": "歯科医師国家試験", "year": "R6 (2024) 年度", "examRound": "", "explanation": "SGA（Subjective Global Assessment：主観的包括的評価）とMNA（Mini Nutritional Assessment）はいずれも栄養状態を評価するスクリーニングツールです。MMSE・HDS-R・MoCAは認知機能評価ツールです。", "profession": "歯科医師"}, {"question": "93 高齢者にみられる病態のうち、低栄養と関連が少ないのはどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["褥瘡", "貧血", "サルコペニア", "変形性膝関節症", "大腿骨頸部骨折"], "answer": "4", "exam": "理学療法士", "year": "R6 (2024) 年度", "examRound": "第60回理学療法士国家試験", "explanation": "低栄養と関連が深い病態：褥瘡（皮膚修復能低下）、貧血（鉄・ビタミンB12・葉酸不足）、サルコペニア（タンパク質・エネルギー不足による筋肉量減少）、骨折（カルシウム・ビタミンD不足による骨粗鬆症）。一方、変形性膝関節症は主に機械的ストレス・肥満が危険因子であり、低栄養よりむしろ「過栄養（肥満）」との関連が強いです。", "profession": "理学療法士"}, {"question": "26 褥瘡の危険因子でないのはどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["低栄養", "血圧の上昇", "体動の減少", "局所的な圧迫", "骨の突出部位"], "answer": "2", "exam": "理学療法士", "year": "R6 (2024) 年度", "examRound": "第60回理学療法士国家試験", "explanation": "褥瘡の主な危険因子：①局所的圧迫・ずれ力、②体動減少（長時間同一体位）、③骨突出部位（仙骨・踵骨など）、④低栄養（皮膚・組織修復能低下）、⑤失禁・皮膚湿潤。血圧上昇は褥瘡の直接的な危険因子ではありません（むしろ末梢循環障害が関係）。", "profession": "理学療法士"}, {"question": "29 ICU での早期リハビリテーションにおける作業療法士の役割で最も適切なのはどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["急性期の栄養管理を行う。", "摂食嚥下機能の治療を行う。", "スタッフの適切な配置を判断する。", "ベッドサイドの医療機器を整備する。", "退院後の日常生活機能を早期より予測する。"], "answer": "5", "exam": "作業療法士", "year": "R6 (2024) 年度", "examRound": "第60回作業療法士国家試験", "explanation": "ICU での作業療法士の主な役割は、早期から患者のADL・生活機能の見通しを立て、退院後の生活を見据えたリハビリテーション計画を立てることです。栄養管理は管理栄養士・医師、嚥下は言語聴覚士（ST）が主担当、機器整備は臨床工学技士の役割です。", "profession": "作業療法士"}, {"question": "E24 健康成人の総エネルギー摂取量に占める栄養素の割合で、日本人の食事摂取基準の目標値の範囲にある組合せはどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["炭水化物35%・蛋白質35%・脂質30%", "炭水化物35%・蛋白質15%・脂質50%", "炭水化物55%・蛋白質35%・脂質10%", "炭水化物55%・蛋白質15%・脂質30%", "炭水化物75%・蛋白質15%・脂質10%"], "answer": "4", "exam": "医師国家試験", "year": "R5 (2023) 年度", "examRound": "第118回医師国家試験問題", "explanation": "日本人の食事摂取基準（2020年版）のPFCバランス目標量：\n・タンパク質（P）：13〜20%エネルギー\n・脂質（F）：20〜30%エネルギー\n・炭水化物（C）：50〜65%エネルギー\n選択肢4の「炭水化物55%・蛋白質15%・脂質30%」がすべての範囲内に収まります。", "profession": "医師"}, {"question": "AM22 二次予防の組合せで正しいのはどれか。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["健常成人・・・禁煙指導", "脂質異常症患者・・・栄養指導", "回復期の脳血管疾患患者・・・服薬指導", "急性期の脳血管疾患患者・・・血圧管理", "生活期の脳血管疾患患者・・・運動指導"], "answer": "2", "exam": "理学療法士", "year": "R5 (2023) 年度", "examRound": "第59回理学療法士国家試験", "explanation": "予防の分類：\n・一次予防：疾病発症前の健常者への予防介入（例：健常成人への禁煙指導）\n・二次予防：疾病の早期発見・早期治療・増悪防止（例：脂質異常症患者への栄養指導）\n・三次予防：機能障害の回復・再発防止・リハビリテーション（例：脳血管疾患後のリハ・服薬管理）", "profession": "理学療法士"}, {"question": "AM84 脳卒中回復期の嚥下障害に対する最も適切な栄養管理はどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["水分にとろみは使用しない", "胃瘻造設後には経口摂取は行わない", "経鼻胃管による経管栄養は誤嚥の危険はない", "点滴管理は栄養摂取量を考慮する必要はない", "経鼻胃管による経管栄養は長期的栄養管理には適さない"], "answer": "5", "exam": "理学療法士", "year": "R5 (2023) 年度", "examRound": "第59回理学療法士国家試験", "explanation": "経鼻胃管は短期的な経腸栄養には使用されますが、長期（一般的に4週間以上）の栄養管理には不向きです（鼻翼潰瘍・不快感・誤嚥リスク等）。長期管理には胃瘻（PEG）が推奨されます。胃瘻造設後も嚥下訓練を継続し経口摂取を試みることは推奨されます。嚥下障害では水分にとろみをつけることが基本です。", "profession": "理学療法士"}, {"question": "PM43 介護予防事業の基本チェックリストで低栄養判断基準となる BMI はどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["16.5 未満", "18.5 未満", "20.5 未満", "22.5 未満", "24.5 未満"], "answer": "2", "exam": "理学療法士", "year": "R5 (2023) 年度", "examRound": "第59回理学療法士国家試験", "explanation": "介護予防事業の基本チェックリストでは、BMI 18.5未満を低栄養のリスクありと判定します。これは一般的な「低体重（やせ）」の国際基準（BMI 18.5未満）と同じです。", "profession": "理学療法士"}, {"question": "PM95 広範囲熱傷の病態と急性期治療で誤っているのはどれか。1つ選べ。", "question2": "", "category": "専門的な問題", "choices": ["高血糖になる。", "全身浮腫を生じる。", "輸液量を制限する。", "基礎代謝量は増加する。", "高蛋白の栄養療法にする。"], "answer": "3", "exam": "理学療法士", "year": "R5 (2023) 年度", "examRound": "第59回理学療法士国家試験", "explanation": "広範囲熱傷の急性期は、大量の滲出液により著明な体液喪失が起こります。そのため積極的な輸液補充（「制限」ではなく「大量投与」）が必要です。ストレス反応により高血糖・基礎代謝亢進・異化亢進が生じ、高タンパク高カロリーの栄養療法が必要です。", "profession": "理学療法士"}, {"question": "AM76　胃全摘出術後の巨赤芽球性貧血で欠乏する栄養素はどれか。1つ選べ。", "question2": "", "category": "専門的な問題", "choices": ["ニコチン酸", "ビタミン A", "ビタミン B1", "ビタミン B12", "ビタミンC"], "answer": "4", "exam": "理学療法士", "year": "R4 (2022) 年度", "examRound": "第58回理学療法士国家試験", "explanation": "胃全摘後には、胃壁細胞から分泌される内因子（intrinsic factor）が欠如します。内因子はビタミンB12の回腸での吸収に必須であるため、胃全摘後はビタミンB12欠乏が起こります。ビタミンB12欠乏では巨赤芽球性貧血（大球性貧血）と神経障害が生じます。", "profession": "理学療法士"}, {"question": "PM39 栄養管理について正しいのはどれか。1つ選べ。", "question2": "", "category": "専門的な問題", "choices": ["成人では毎日体重 kgあたり0.1g以上のタンパク質を摂取するのがよい。", "BMIが22.5未満の場合、栄養障害があると判定する。", "低栄養になると血中総リンパ球数が増加する。", "発熱時には、エネルギー必要量が増加する。", "重度熱傷では、尿中窒素排泄量が減少する。"], "answer": "4", "exam": "理学療法士", "year": "R2 (2020年度)", "examRound": "第56回理学療法士国家試験", "explanation": "発熱では体温1℃上昇ごとに基礎代謝が約13%増加するため、エネルギー必要量が増加します。成人のタンパク質必要量は体重1kgあたり0.8〜1.0g/日（活動量・病態により増加）。低栄養ではリンパ球数は減少（免疫機能低下）。重度熱傷の異化亢進で尿中窒素排泄量は増加します。", "profession": "理学療法士"}, {"question": "67 ALS患者（55歳男性）が経口摂取と胃瘻による経管栄養を併用し在宅療養。適切な指導内容はどれか。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["水分は経口による摂取とする。", "経口摂取中は頸部前屈位とする。", "経管栄養剤以外の注入を禁止する。", "注入時間に合わせて生活パターンを変更する。"], "answer": "2", "exam": "看護師", "year": "R5 (2023) 年度", "examRound": "第113回看護師国家試験", "explanation": "ALS患者の嚥下障害に対しては、頸部前屈位（あごを引いた姿勢）が誤嚥防止に有効です。頸部前屈により喉頭蓋が気道を覆いやすくなり誤嚥を防ぎます。水分は嚥下障害があればとろみをつけるなど工夫が必要で、経口のみとは言えません。胃瘻からは栄養剤以外にも薬・水分等の注入が可能です。", "profession": "看護師"}, {"question": "42 胃瘻からの経管栄養を行う在宅療養者の家族に説明する内容で正しいのはどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["流動（ミキサー食）は注入できる。", "注入前に胃瘻の瘻孔部を消毒する。", "胃瘻カテーテルは週に1回交換する。", "注入中は体位を 15 度の Fowler位にする。"], "answer": "1", "exam": "看護師", "year": "R6 (2024) 年度", "examRound": "第114回看護師国家試験", "explanation": "胃瘻（PEG）からはミキサー食などの流動食の注入も可能です。瘻孔部は消毒は不要で清潔に保つことが基本（消毒薬は組織障害を起こす場合あり）。カテーテルは通常3〜6ヶ月ごとの交換。注入中は逆流・誤嚥防止のため30〜45度のファウラー位（座位に近い体位）が推奨されます。", "profession": "看護師"}, {"question": "22 経鼻経管栄養法で胃液が吸引できることを確認するタイミングはどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["覚醒時", "入眠前", "経管栄養剤の投与直前", "経管栄養剤の投与終了時"], "answer": "3", "exam": "看護師", "year": "R6 (2024) 年度", "examRound": "第114回看護師国家試験", "explanation": "経鼻経管栄養を開始する前に、チューブが胃内に正しく留置されていることを確認するため、投与直前に胃液の吸引確認を行います。これにより気管や食道への誤挿入による事故を防ぐことができます。", "profession": "看護師"}, {"question": "PM132 80 歳、男性。ADL 自立。身長 155 cm、体重 47 kg、BMI 19. 6 kg/m2。標準体重 53 kg。握力 20 kg。サルコペニアと診断された。血液検査値は、アルブミン3. 2 g/dL、クレアチニン 0. 6 mg/dL、尿素窒素 12 mg/dL。たんぱく尿（－）。この患者の１日当たりの目標栄養量の組合せとして、最も適切なのはどれか。１つ選べ。", "question2": "", "category": "専門的な問題", "choices": ["エネルギー（kcal/日）1,000　・・　たんぱく質（g/日）40", "エネルギー（kcal/日）1,600　・・　たんぱく質（g/日）40", "エネルギー（kcal/日）1,600　・・　たんぱく質（g/日）65", "エネルギー（kcal/日）2,000　・・　たんぱく質（g/日）100"], "answer": "3", "exam": "管理栄養士", "year": "R6 (2024) 年度", "examRound": "第39回管理栄養士国家試験", "explanation": "（検討中）", "profession": "管理栄養士"}, {"question": "AM82 栄養アセスメントに関する記述である。最も適当なのはどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["上腕筋面積は、肩甲骨下部皮下脂肪厚と上腕周囲長から求める。", "体脂肪率は、水中体重秤量法により推定できる。", "ウエスト周囲長は、息を吸った状態で測定する。", "尿中クレアチニン排泄量は、測定前に摂取した食事たんぱく質の影響を受ける。", "生体電気インピーダンス（BIA）法は、測定前に摂取した食事の影響を受けない。"], "answer": "2", "exam": "管理栄養士", "year": "R6 (2024) 年度", "examRound": "第39回管理栄養士国家試験", "explanation": "（検討中）", "profession": "管理栄養士"}, {"question": "PM102 地域在住の高齢女性に、個別の栄養カウンセリングを行い、フレイル予防のための目標を話し合った。行動契約の目標宣言として、最も適切なのはどれか。１つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["たんぱく質を多く含む食品の摂取量を増やす。", "間食で牛乳や乳製品を摂るように心がける。", "今よりも体重が低下しないようにする。", "肉と魚を両方とも１日１回以上食べる。"], "answer": "4", "exam": "管理栄養士", "year": "R6 (2024) 年度", "examRound": "第39回管理栄養士国家試験", "explanation": "（検討中）", "profession": "管理栄養士"}, {"question": "PM115 静脈栄養法に関する記述である。最も適当なのはどれか。１つ選べ。", "question2": "", "category": "専門的な問題", "choices": ["末梢静脈栄養では、2,500 kcal/日の投与ができる。", "末梢静脈栄養では、浸透圧比（血漿浸透圧との比）を５とする。", "脂肪は、1.5 g/kg/時の速度で投与する。", "中心静脈栄養では、糖質濃度 20％ の維持液の使用が可能である。", "中心静脈栄養は、経腸栄養に比べてバクテリアルトランスロケーションを起こしにくい。"], "answer": "4", "exam": "管理栄養士", "year": "R6 (2024) 年度", "examRound": "第39回管理栄養士国家試験", "explanation": "（検討中）", "profession": "管理栄養士"}, {"question": "C68 72歳女性。オーラルフレイルを指摘。最大舌圧26kPa（低下基準30kPa未満）。適切な対応はどれか。2つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["栄養指導", "構音訓練", "舌抵抗訓練", "口腔衛生指導", "ミールラウンド"], "answer": "1, 3", "exam": "歯科医師国家試験", "year": "R6 (2024) 年度", "examRound": "第１１８回歯科医師国家試験", "explanation": "（検討中）", "profession": "歯科医師"}, {"question": "PM94 嚥下機能を評価するためのスクリーニング法である。\n最も適当なのはどれか。1つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["Functional Independence Measure（FIM）", "Fall Risk Index（FRI）", "Geriatric Nutritional Risk Index（GNRI）", "Mini─Mental State Examination（MMSE）", "Repetitive Saliva Swallowing Test（RSST）"], "answer": "5", "exam": "管理栄養士", "year": "R6 (2024) 年度", "examRound": "第39回管理栄養士国家試験", "explanation": "（検討中）", "profession": "管理栄養士"}, {"question": "PM113 骨格筋量をアセスメントするための指標である。\n最も適当なのはどれか。１つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["腹囲", "下腿周囲長", "フィッシャー比", "尿中ナトリウム排泄量", "呼吸商"], "answer": "2", "exam": "管理栄養士", "year": "R6 (2024) 年度", "examRound": "第39回管理栄養士国家試験", "explanation": "（検討中）", "profession": "管理栄養士"}, {"question": "A033 フレイルの判定要件はどれか。2つ選べ。", "question2": "", "category": "基本問題（多職種共通）", "choices": ["骨密度の減少", "柔軟性の低下", "肺活量の低下", "歩行速度の低下", "身体活動量の減少"], "answer": "4, 5", "exam": "理学療法士", "year": "R6 (2024) 年度", "examRound": "第６０回理学療法士国家試験", "explanation": "（検討中）", "profession": "理学療法士"}];
 
-const quizData = [
-  {
-    "question": "問340　65歳男性。身長178cm、体重75kg。食道がんの術前・術後の栄養管理にNSTが介入。術前は食道通過障害があるが水分摂取は可能。術後も水分摂取は可能。この患者に対する栄養療法に関する記述として適切なのはどれか。2つ選べ。",
-    "question2": "",
-    "category": "専門的な問題",
-    "choices": [
-      "術前の栄養管理は、経腸栄養療法は実施できない。",
-      "術後の栄養管理には、経腸栄養療法が適している。",
-      "末梢静脈栄養療法では1日で必要な糖質量を摂取できる。",
-      "経腸栄養剤としては、消化態栄養剤よりも半消化態栄養剤の方が適している。",
-      "経腸栄養療法よりも中心静脈栄養療法の方が感染性リスクは少ない。"
-    ],
-    "answer": "2, 4",
-    "exam": "薬剤師国家試験",
-    "year": "R6 (2024) 年度",
-    "examRound": "第110回薬剤師国家試験問題",
-    "explanation": "食道通過障害があっても水分摂取が可能であれば、経鼻胃管を用いた経腸栄養療法が実施可能です。術後も消化管機能が保たれている場合は、経腸栄養が中心静脈栄養より感染リスクが低く推奨されます。半消化態栄養剤は消化態より腸管機能が正常に近い場合に適しており、術後回復期の患者に適しています。"
-  },
-  {
-    "question": "問 236−237　50歳男性。慢性腎臓病ステージ 3b。脳梗塞急性期で経口摂取できず、3 日間末梢静脈栄養を投与していたが、栄養不足が懸念されることから、主治医より完全静脈栄養（TPN）の処方設計について薬剤師に相談があった。",
-    "question2": "問 236（実務）処方を設計する際に、検討すべきこととして適切なのはどれか。2つ選べ。",
-    "category": "専門的な問題",
-    "choices": [
-      "腎機能への影響を考慮し、分岐鎖アミノ酸（BCAA）を投与する。",
-      "低リン血症のリスクがあるため、リン酸二カリウム製剤を投与する。",
-      "代謝性アルカローシスのリスクがあるため、生理食塩液や塩化カリウム製剤を投与する。",
-      "低カルシウム血症のリスクがあるため、活性型ビタミン D3 製剤を投与する。",
-      "腎不全が進行した場合、カリウム製剤を積極的に投与する。"
-    ],
-    "answer": "1, 4",
-    "exam": "薬剤師国家試験",
-    "year": "R6 (2024) 年度",
-    "examRound": "第110回薬剤師国家試験問題",
-    "explanation": "慢性腎臓病（CKD）ではBCAAが腎機能保護に役立つとされており、適切なアミノ酸管理が重要です。またCKDでは活性型ビタミンD3の産生が低下し低カルシウム血症をきたしやすいため、補充が必要です。TPN開始後のリフィーディング症候群では低リン血症が起こりますが、CKDではリンの排泄が低下しているため安易な補充は禁忌です。"
-  },
-  {
-    "question": "問 128　三大栄養素としての糖質、脂質、タンパク質に関する記述のうち、正しいのはどれか。2つ選べ。",
-    "question2": "",
-    "category": "専門的な問題",
-    "choices": [
-      "単位重量当たりで得られるエネルギーが最も多いのは、糖質である。",
-      "糖質はエネルギー源となり、エネルギー貯蔵体にも変換される。",
-      "脂質から単位重量当たりに得られるエネルギーは、タンパク質の約 4 倍である。",
-      "タンパク質はエネルギー源にはならない。",
-      "脂質やタンパク質の代謝物の中には、ホルモンなどの生理活性物質の前駆体になるものがある。"
-    ],
-    "answer": "2, 5",
-    "exam": "薬剤師国家試験",
-    "year": "R5 (2023) 年度",
-    "examRound": "第109回薬剤師国家試験問題",
-    "explanation": "糖質は4 kcal/g、タンパク質も4 kcal/g、脂質は9 kcal/gです。脂質のエネルギーはタンパク質の約2倍（4倍ではない）。糖質は余剰分がグリコーゲンや脂肪として貯蔵されます。コレステロールはステロイドホルモンの前駆体、アラキドン酸はプロスタグランジンの前駆体となります。"
-  },
-  {
-    "question": "問 235（衛生） 褥瘡治療の患者。総エネルギー量が体重 1 kg あたり 30kcal、タンパク質摂取量が 1 日あたり 60 g。この場合の非タンパク質カロリー／窒素比（NPC/N 比）として最も近いのはどれか。1つ選べ。ただし、タンパク質の窒素含有率は 16％とする。",
-    "question2": "",
-    "category": "専門的な問題",
-    "choices": [
-      "100",
-      "120",
-      "140",
-      "160",
-      "180"
-    ],
-    "answer": "2",
-    "exam": "薬剤師国家試験",
-    "year": "R5 (2023) 年度",
-    "examRound": "第109回薬剤師国家試験問題",
-    "explanation": "NPC/N比の計算：\n①窒素量 = 60 g × 0.16 = 9.6 g\n②タンパク質のカロリー = 60 × 4 = 240 kcal\n③体重は記載なし→NPC = 総カロリー − タンパク質カロリー\n体重をXとすると、総カロリー = 30X kcal、NPC = 30X − 240\n代入すると答えは約120となります（体重50 kgと仮定: 1500−240 = 1260÷9.6 ≈ 131…設問の条件で体重の指定があるため120が最も近い）。"
-  },
-  {
-    "question": "問 226　68 歳女性。BMI 18.2。体重減少・体力低下を気にしており「フレイルに自分も該当するのではないか」と健康サポート薬局に相談に来た。フレイルに関する内容として、正しいのはどれか。2つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "フレイルは、加齢に伴う身体的、精神的な機能低下のことである。",
-      "フレイルは、要介護になった状態のことである。",
-      "フレイルは、回復することのない病態である。",
-      "フレイルの進行を防ぐことは、健康寿命の延伸につながる。",
-      "フレイルは、過栄養により防ぐことができる。"
-    ],
-    "answer": "1, 4",
-    "exam": "薬剤師国家試験",
-    "year": "R5 (2023) 年度",
-    "examRound": "第109回薬剤師国家試験問題",
-    "explanation": "フレイルとは、加齢に伴い身体・精神・社会的な脆弱性が高まった状態で、要介護の前段階です（要介護ではない）。適切な介入により回復可能な可逆的な状態です。フレイル予防により健康寿命が延伸します。「過栄養」ではなく、適切な栄養摂取・運動・社会参加が予防に重要です。"
-  },
-  {
-    "question": "問 227　フレイル予防に関する薬剤師からの提案として、適切なのはどれか。2つ選べ。（68歳女性、BMI 18.2、体重・体力低下あり、咀嚼困難傾向、外出減少、社会交流減少）",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "タンパク質の摂取量を減らす。",
-      "咀嚼機能と嚥下機能の低下を防ぐため、口腔体操などを行う。",
-      "日常生活において、できるだけ紫外線を浴びないようにする。",
-      "疲労を回避するために、運動は現状よりも控える。",
-      "地域の活動に参加して、適度に人との交流を行う。"
-    ],
-    "answer": "2, 5",
-    "exam": "薬剤師国家試験",
-    "year": "R5 (2023) 年度",
-    "examRound": "第109回薬剤師国家試験問題",
-    "explanation": "フレイル予防の3本柱は「栄養（タンパク質摂取増加）」「運動」「社会参加」です。口腔機能の維持は食事摂取量確保に直結し重要です。高齢者では紫外線によるビタミンD産生も必要なため、過度な日光回避は禁物です。社会参加は認知・精神・身体機能の維持に有効です。"
-  },
-  {
-    "question": "36 82 歳女性。膵癌肝転移で緩和ケア病棟入院中。1週間前から食欲低下・食事摂取量減少。アルブミン 2.8 g/dL。NST に介入依頼。NSTの活動で正しいのはどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "胃瘻造設を提案する。",
-      "口腔ケアの実施を提案する。",
-      "緩和ケアチームとは独立して活動する。",
-      "体重が 4 kg 以上減少してから介入する。",
-      "栄養療法の実施にあたり主治医の許諾は不要である。"
-    ],
-    "answer": "2",
-    "exam": "医師国家試験",
-    "year": "R6 (2024) 年度",
-    "examRound": "第119回医師国家試験問題",
-    "explanation": "終末期の緩和ケア患者においては、積極的な栄養補充（胃瘻・TPN）よりも苦痛緩和と口腔ケアによるQOL維持が優先されます。NSTは緩和ケアチームと連携して活動し、主治医との協働のもとで介入します。口腔ケアは誤嚥性肺炎予防や口腔内の苦痛軽減に有効です。"
-  },
-  {
-    "question": "75 54 歳男性。健康診断で肝障害指摘。BMI 28.1（肥満）、腹囲 98 cm。トリグリセリド 346 mg/dL。腹部超音波で脂肪肝所見あり。この患者に対する指導で正しいのはどれか。3つ選べ。",
-    "question2": "",
-    "category": "専門的な問題",
-    "choices": [
-      "「体重を減らしましょう」",
-      "「栄養指導を受けましょう」",
-      "「身体活動量を増やしましょう」",
-      "「もう少し早めに就寝しましょう」",
-      "「まず中性脂肪を下げる薬を飲みましょう」"
-    ],
-    "answer": "1, 2, 3",
-    "exam": "医師国家試験",
-    "year": "R6 (2024) 年度",
-    "examRound": "第119回医師国家試験問題",
-    "explanation": "非アルコール性脂肪肝炎（NASH）/脂肪肝の治療の基本は生活習慣改善です。体重減少（5〜10%の減量で肝機能改善）、食事療法（栄養指導）、運動療法が三本柱です。薬物療法は生活習慣改善が奏効しない場合の次のステップであり、ファーストラインではありません。"
-  },
-  {
-    "question": "33 高齢者の入院時の栄養評価で低栄養が疑われるのはどれか。2つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "褥瘡",
-      "難聴",
-      "腰痛",
-      "高血圧",
-      "体重減少"
-    ],
-    "answer": "1, 5",
-    "exam": "医師国家試験",
-    "year": "R6 (2024) 年度",
-    "examRound": "第119回医師国家試験問題",
-    "explanation": "低栄養の主な症状・所見：体重減少、筋肉量・筋力低下、創傷治癒遅延（褥瘡）、感染症罹患率増加、浮腫（低アルブミン血症）などがあります。褥瘡は低栄養により皮膚・軟部組織の修復能が低下することで発生・遷延します。難聴・腰痛・高血圧は低栄養との直接的な関連は薄いです。"
-  },
-  {
-    "question": "58 76 歳男性。倦怠感・食欲低下・趣味への興味喪失・外出減少あり。四肢筋力保たれ歩行正常。HDS-R 30点。アルブミン 4.2 g/dL（正常）。この患者の状態で正しいのはどれか。2つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "低栄養",
-      "うつ状態",
-      "閉じこもり",
-      "認知機能低下",
-      "ロコモティブシンドローム"
-    ],
-    "answer": "2, 3",
-    "exam": "医師国家試験",
-    "year": "R6 (2024) 年度",
-    "examRound": "第119回医師国家試験問題",
-    "explanation": "アルブミン正常・筋力保持のため低栄養やロコモティブシンドロームは否定的。HDS-R 30点（満点）で認知機能低下もなし。食欲低下・興味喪失・活動性低下は「うつ状態」の典型的症状。外出や他者交流が著しく減少した状態は「閉じこもり（社会的孤立）」に該当し、フレイルの社会的側面です。"
-  },
-  {
-    "question": "A4 栄養状態の指標となるのはどれか。2つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "SGA",
-      "MNA",
-      "MMSE",
-      "HDS-R",
-      "MoCA〈Montreal Cognitive Assessment〉"
-    ],
-    "answer": "1, 2",
-    "exam": "歯科医師国家試験",
-    "year": "R6 (2024) 年度",
-    "examRound": "",
-    "explanation": "SGA（Subjective Global Assessment：主観的包括的評価）とMNA（Mini Nutritional Assessment）はいずれも栄養状態を評価するスクリーニングツールです。MMSE・HDS-R・MoCAは認知機能評価ツールです。"
-  },
-  {
-    "question": "93 高齢者にみられる病態のうち、低栄養と関連が少ないのはどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "褥瘡",
-      "貧血",
-      "サルコペニア",
-      "変形性膝関節症",
-      "大腿骨頸部骨折"
-    ],
-    "answer": "4",
-    "exam": "理学療法士",
-    "year": "R6 (2024) 年度",
-    "examRound": "第60回理学療法士国家試験",
-    "explanation": "低栄養と関連が深い病態：褥瘡（皮膚修復能低下）、貧血（鉄・ビタミンB12・葉酸不足）、サルコペニア（タンパク質・エネルギー不足による筋肉量減少）、骨折（カルシウム・ビタミンD不足による骨粗鬆症）。一方、変形性膝関節症は主に機械的ストレス・肥満が危険因子であり、低栄養よりむしろ「過栄養（肥満）」との関連が強いです。"
-  },
-  {
-    "question": "26 褥瘡の危険因子でないのはどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "低栄養",
-      "血圧の上昇",
-      "体動の減少",
-      "局所的な圧迫",
-      "骨の突出部位"
-    ],
-    "answer": "2",
-    "exam": "理学療法士",
-    "year": "R6 (2024) 年度",
-    "examRound": "第60回理学療法士国家試験",
-    "explanation": "褥瘡の主な危険因子：①局所的圧迫・ずれ力、②体動減少（長時間同一体位）、③骨突出部位（仙骨・踵骨など）、④低栄養（皮膚・組織修復能低下）、⑤失禁・皮膚湿潤。血圧上昇は褥瘡の直接的な危険因子ではありません（むしろ末梢循環障害が関係）。"
-  },
-  {
-    "question": "29 ICU での早期リハビリテーションにおける作業療法士の役割で最も適切なのはどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "急性期の栄養管理を行う。",
-      "摂食嚥下機能の治療を行う。",
-      "スタッフの適切な配置を判断する。",
-      "ベッドサイドの医療機器を整備する。",
-      "退院後の日常生活機能を早期より予測する。"
-    ],
-    "answer": "5",
-    "exam": "作業療法士",
-    "year": "R6 (2024) 年度",
-    "examRound": "第60回作業療法士国家試験",
-    "explanation": "ICU での作業療法士の主な役割は、早期から患者のADL・生活機能の見通しを立て、退院後の生活を見据えたリハビリテーション計画を立てることです。栄養管理は管理栄養士・医師、嚥下は言語聴覚士（ST）が主担当、機器整備は臨床工学技士の役割です。"
-  },
-  {
-    "question": "E24 健康成人の総エネルギー摂取量に占める栄養素の割合で、日本人の食事摂取基準の目標値の範囲にある組合せはどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "炭水化物35%・蛋白質35%・脂質30%",
-      "炭水化物35%・蛋白質15%・脂質50%",
-      "炭水化物55%・蛋白質35%・脂質10%",
-      "炭水化物55%・蛋白質15%・脂質30%",
-      "炭水化物75%・蛋白質15%・脂質10%"
-    ],
-    "answer": "4",
-    "exam": "医師国家試験",
-    "year": "R5 (2023) 年度",
-    "examRound": "第118回医師国家試験問題",
-    "explanation": "日本人の食事摂取基準（2020年版）のPFCバランス目標量：\n・タンパク質（P）：13〜20%エネルギー\n・脂質（F）：20〜30%エネルギー\n・炭水化物（C）：50〜65%エネルギー\n選択肢4の「炭水化物55%・蛋白質15%・脂質30%」がすべての範囲内に収まります。"
-  },
-  {
-    "question": "AM22 二次予防の組合せで正しいのはどれか。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "健常成人・・・禁煙指導",
-      "脂質異常症患者・・・栄養指導",
-      "回復期の脳血管疾患患者・・・服薬指導",
-      "急性期の脳血管疾患患者・・・血圧管理",
-      "生活期の脳血管疾患患者・・・運動指導"
-    ],
-    "answer": "2",
-    "exam": "理学療法士",
-    "year": "R5 (2023) 年度",
-    "examRound": "第59回理学療法士国家試験",
-    "explanation": "予防の分類：\n・一次予防：疾病発症前の健常者への予防介入（例：健常成人への禁煙指導）\n・二次予防：疾病の早期発見・早期治療・増悪防止（例：脂質異常症患者への栄養指導）\n・三次予防：機能障害の回復・再発防止・リハビリテーション（例：脳血管疾患後のリハ・服薬管理）"
-  },
-  {
-    "question": "AM84 脳卒中回復期の嚥下障害に対する最も適切な栄養管理はどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "水分にとろみは使用しない",
-      "胃瘻造設後には経口摂取は行わない",
-      "経鼻胃管による経管栄養は誤嚥の危険はない",
-      "点滴管理は栄養摂取量を考慮する必要はない",
-      "経鼻胃管による経管栄養は長期的栄養管理には適さない"
-    ],
-    "answer": "5",
-    "exam": "理学療法士",
-    "year": "R5 (2023) 年度",
-    "examRound": "第59回理学療法士国家試験",
-    "explanation": "経鼻胃管は短期的な経腸栄養には使用されますが、長期（一般的に4週間以上）の栄養管理には不向きです（鼻翼潰瘍・不快感・誤嚥リスク等）。長期管理には胃瘻（PEG）が推奨されます。胃瘻造設後も嚥下訓練を継続し経口摂取を試みることは推奨されます。嚥下障害では水分にとろみをつけることが基本です。"
-  },
-  {
-    "question": "PM43 介護予防事業の基本チェックリストで低栄養判断基準となる BMI はどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "16.5 未満",
-      "18.5 未満",
-      "20.5 未満",
-      "22.5 未満",
-      "24.5 未満"
-    ],
-    "answer": "2",
-    "exam": "理学療法士",
-    "year": "R5 (2023) 年度",
-    "examRound": "第59回理学療法士国家試験",
-    "explanation": "介護予防事業の基本チェックリストでは、BMI 18.5未満を低栄養のリスクありと判定します。これは一般的な「低体重（やせ）」の国際基準（BMI 18.5未満）と同じです。"
-  },
-  {
-    "question": "PM95 広範囲熱傷の病態と急性期治療で誤っているのはどれか。1つ選べ。",
-    "question2": "",
-    "category": "専門的な問題",
-    "choices": [
-      "高血糖になる。",
-      "全身浮腫を生じる。",
-      "輸液量を制限する。",
-      "基礎代謝量は増加する。",
-      "高蛋白の栄養療法にする。"
-    ],
-    "answer": "3",
-    "exam": "理学療法士",
-    "year": "R5 (2023) 年度",
-    "examRound": "第59回理学療法士国家試験",
-    "explanation": "広範囲熱傷の急性期は、大量の滲出液により著明な体液喪失が起こります。そのため積極的な輸液補充（「制限」ではなく「大量投与」）が必要です。ストレス反応により高血糖・基礎代謝亢進・異化亢進が生じ、高タンパク高カロリーの栄養療法が必要です。"
-  },
-  {
-    "question": "AM76　胃全摘出術後の巨赤芽球性貧血で欠乏する栄養素はどれか。1つ選べ。",
-    "question2": "",
-    "category": "専門的な問題",
-    "choices": [
-      "ニコチン酸",
-      "ビタミン A",
-      "ビタミン B1",
-      "ビタミン B12",
-      "ビタミンC"
-    ],
-    "answer": "4",
-    "exam": "理学療法士",
-    "year": "R4 (2022) 年度",
-    "examRound": "第58回理学療法士国家試験",
-    "explanation": "胃全摘後には、胃壁細胞から分泌される内因子（intrinsic factor）が欠如します。内因子はビタミンB12の回腸での吸収に必須であるため、胃全摘後はビタミンB12欠乏が起こります。ビタミンB12欠乏では巨赤芽球性貧血（大球性貧血）と神経障害が生じます。"
-  },
-  {
-    "question": "PM39 栄養管理について正しいのはどれか。1つ選べ。",
-    "question2": "",
-    "category": "専門的な問題",
-    "choices": [
-      "成人では毎日体重 kgあたり0.1g以上のタンパク質を摂取するのがよい。",
-      "BMIが22.5未満の場合、栄養障害があると判定する。",
-      "低栄養になると血中総リンパ球数が増加する。",
-      "発熱時には、エネルギー必要量が増加する。",
-      "重度熱傷では、尿中窒素排泄量が減少する。"
-    ],
-    "answer": "4",
-    "exam": "理学療法士",
-    "year": "R2 (2020年度)",
-    "examRound": "第56回理学療法士国家試験",
-    "explanation": "発熱では体温1℃上昇ごとに基礎代謝が約13%増加するため、エネルギー必要量が増加します。成人のタンパク質必要量は体重1kgあたり0.8〜1.0g/日（活動量・病態により増加）。低栄養ではリンパ球数は減少（免疫機能低下）。重度熱傷の異化亢進で尿中窒素排泄量は増加します。"
-  },
-  {
-    "question": "67 ALS患者（55歳男性）が経口摂取と胃瘻による経管栄養を併用し在宅療養。適切な指導内容はどれか。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "水分は経口による摂取とする。",
-      "経口摂取中は頸部前屈位とする。",
-      "経管栄養剤以外の注入を禁止する。",
-      "注入時間に合わせて生活パターンを変更する。"
-    ],
-    "answer": "2",
-    "exam": "看護師",
-    "year": "R5 (2023) 年度",
-    "examRound": "第113回看護師国家試験",
-    "explanation": "ALS患者の嚥下障害に対しては、頸部前屈位（あごを引いた姿勢）が誤嚥防止に有効です。頸部前屈により喉頭蓋が気道を覆いやすくなり誤嚥を防ぎます。水分は嚥下障害があればとろみをつけるなど工夫が必要で、経口のみとは言えません。胃瘻からは栄養剤以外にも薬・水分等の注入が可能です。"
-  },
-  {
-    "question": "42 胃瘻からの経管栄養を行う在宅療養者の家族に説明する内容で正しいのはどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "流動（ミキサー食）は注入できる。",
-      "注入前に胃瘻の瘻孔部を消毒する。",
-      "胃瘻カテーテルは週に1回交換する。",
-      "注入中は体位を 15 度の Fowler位にする。"
-    ],
-    "answer": "1",
-    "exam": "看護師",
-    "year": "R6 (2024) 年度",
-    "examRound": "第114回看護師国家試験",
-    "explanation": "胃瘻（PEG）からはミキサー食などの流動食の注入も可能です。瘻孔部は消毒は不要で清潔に保つことが基本（消毒薬は組織障害を起こす場合あり）。カテーテルは通常3〜6ヶ月ごとの交換。注入中は逆流・誤嚥防止のため30〜45度のファウラー位（座位に近い体位）が推奨されます。"
-  },
-  {
-    "question": "22 経鼻経管栄養法で胃液が吸引できることを確認するタイミングはどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "覚醒時",
-      "入眠前",
-      "経管栄養剤の投与直前",
-      "経管栄養剤の投与終了時"
-    ],
-    "answer": "3",
-    "exam": "看護師",
-    "year": "R6 (2024) 年度",
-    "examRound": "第114回看護師国家試験",
-    "explanation": "経鼻経管栄養を開始する前に、チューブが胃内に正しく留置されていることを確認するため、投与直前に胃液の吸引確認を行います。これにより気管や食道への誤挿入による事故を防ぐことができます。"
-  },
-  {
-    "question": "PM132 80 歳、男性。ADL 自立。身長 155 cm、体重 47 kg、BMI 19. 6 kg/m2。標準体重 53 kg。握力 20 kg。サルコペニアと診断された。血液検査値は、アルブミン3. 2 g/dL、クレアチニン 0. 6 mg/dL、尿素窒素 12 mg/dL。たんぱく尿（－）。この患者の１日当たりの目標栄養量の組合せとして、最も適切なのはどれか。１つ選べ。",
-    "question2": "",
-    "category": "専門的な問題",
-    "choices": [
-      "エネルギー（kcal/日）1,000　・・　たんぱく質（g/日）40",
-      "エネルギー（kcal/日）1,600　・・　たんぱく質（g/日）40",
-      "エネルギー（kcal/日）1,600　・・　たんぱく質（g/日）65",
-      "エネルギー（kcal/日）2,000　・・　たんぱく質（g/日）100"
-    ],
-    "answer": "3",
-    "exam": "管理栄養士",
-    "year": "R6 (2024) 年度",
-    "examRound": "第39回管理栄養士国家試験",
-    "explanation": "（検討中）"
-  },
-  {
-    "question": "AM82 栄養アセスメントに関する記述である。最も適当なのはどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "上腕筋面積は、肩甲骨下部皮下脂肪厚と上腕周囲長から求める。",
-      "体脂肪率は、水中体重秤量法により推定できる。",
-      "ウエスト周囲長は、息を吸った状態で測定する。",
-      "尿中クレアチニン排泄量は、測定前に摂取した食事たんぱく質の影響を受ける。",
-      "生体電気インピーダンス（BIA）法は、測定前に摂取した食事の影響を受けない。"
-    ],
-    "answer": "2",
-    "exam": "管理栄養士",
-    "year": "R6 (2024) 年度",
-    "examRound": "第39回管理栄養士国家試験",
-    "explanation": "（検討中）"
-  },
-  {
-    "question": "PM102 地域在住の高齢女性に、個別の栄養カウンセリングを行い、フレイル予防のための目標を話し合った。行動契約の目標宣言として、最も適切なのはどれか。１つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "たんぱく質を多く含む食品の摂取量を増やす。",
-      "間食で牛乳や乳製品を摂るように心がける。",
-      "今よりも体重が低下しないようにする。",
-      "肉と魚を両方とも１日１回以上食べる。"
-    ],
-    "answer": "4",
-    "exam": "管理栄養士",
-    "year": "R6 (2024) 年度",
-    "examRound": "第39回管理栄養士国家試験",
-    "explanation": "（検討中）"
-  },
-  {
-    "question": "PM115 静脈栄養法に関する記述である。最も適当なのはどれか。１つ選べ。",
-    "question2": "",
-    "category": "専門的な問題",
-    "choices": [
-      "末梢静脈栄養では、2,500 kcal/日の投与ができる。",
-      "末梢静脈栄養では、浸透圧比（血漿浸透圧との比）を５とする。",
-      "脂肪は、1.5 g/kg/時の速度で投与する。",
-      "中心静脈栄養では、糖質濃度 20％ の維持液の使用が可能である。",
-      "中心静脈栄養は、経腸栄養に比べてバクテリアルトランスロケーションを起こしにくい。"
-    ],
-    "answer": "4",
-    "exam": "管理栄養士",
-    "year": "R6 (2024) 年度",
-    "examRound": "第39回管理栄養士国家試験",
-    "explanation": "（検討中）"
-  },
-  {
-    "question": "C68 72歳女性。オーラルフレイルを指摘。最大舌圧26kPa（低下基準30kPa未満）。適切な対応はどれか。2つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "栄養指導",
-      "構音訓練",
-      "舌抵抗訓練",
-      "口腔衛生指導",
-      "ミールラウンド"
-    ],
-    "answer": "1, 3",
-    "exam": "歯科医師国家試験",
-    "year": "R6 (2024) 年度",
-    "examRound": "第１１８回歯科医師国家試験",
-    "explanation": "（検討中）"
-  },
-  {
-    "question": "PM94 嚥下機能を評価するためのスクリーニング法である。\n最も適当なのはどれか。1つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "Functional Independence Measure（FIM）",
-      "Fall Risk Index（FRI）",
-      "Geriatric Nutritional Risk Index（GNRI）",
-      "Mini─Mental State Examination（MMSE）",
-      "Repetitive Saliva Swallowing Test（RSST）"
-    ],
-    "answer": "5",
-    "exam": "管理栄養士",
-    "year": "R6 (2024) 年度",
-    "examRound": "第39回管理栄養士国家試験",
-    "explanation": "（検討中）"
-  },
-  {
-    "question": "PM113 骨格筋量をアセスメントするための指標である。\n最も適当なのはどれか。１つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "腹囲",
-      "下腿周囲長",
-      "フィッシャー比",
-      "尿中ナトリウム排泄量",
-      "呼吸商"
-    ],
-    "answer": "2",
-    "exam": "管理栄養士",
-    "year": "R6 (2024) 年度",
-    "examRound": "第39回管理栄養士国家試験",
-    "explanation": "（検討中）"
-  },
-  {
-    "question": "A033 フレイルの判定要件はどれか。2つ選べ。",
-    "question2": "",
-    "category": "基本問題（多職種共通）",
-    "choices": [
-      "骨密度の減少",
-      "柔軟性の低下",
-      "肺活量の低下",
-      "歩行速度の低下",
-      "身体活動量の減少"
-    ],
-    "answer": "4, 5",
-    "exam": "理学療法士",
-    "year": "R6 (2024) 年度",
-    "examRound": "第６０回理学療法士国家試験",
-    "explanation": "（検討中）"
+const BOOKMARK_KEY = 'kakomon_bm_v2';
+function loadBM(){ try{ return JSON.parse(localStorage.getItem(BOOKMARK_KEY)||'{}'); }catch{return{};} }
+function saveBM(bm){ try{ localStorage.setItem(BOOKMARK_KEY,JSON.stringify(bm)); }catch{} }
+
+let state = {
+  tab: 'quiz',
+  questions: [],
+  qIdx: 0,
+  selected: [],
+  answered: false,
+  correct: 0,
+  incorrect: 0,
+  catFilter: 'all',
+  examFilter: 'all',
+  quizMode: false,
+  results: [],
+  showResults: false,
+  bookmarks: loadBM(),
+  animKey: 0,
+};
+
+const app = document.getElementById('app');
+
+function categories(){ return [...new Set(QUIZ_DATA.map(q=>q.category).filter(Boolean))]; }
+function professions(){ return [...new Set(QUIZ_DATA.map(q=>q.profession).filter(Boolean))]; }
+function filtered(){
+  return QUIZ_DATA.filter(q=>{
+    const c = state.catFilter==='all' || q.category===state.catFilter;
+    const e = state.examFilter==='all' || q.profession===state.examFilter;
+    return c && e;
+  });
+}
+function qId(q){ return (q.exam||'')+'_'+(q.year||'')+'_'+(q.question||'').slice(0,30); }
+function reqCount(q){
+  const t=(q.question||'')+(q.question2||'');
+  if(t.includes('3つ選べ')||t.includes('3 つ選べ')) return 3;
+  if(t.includes('2つ選べ')||t.includes('2 つ選べ')) return 2;
+  return 1;
+}
+function correctNums(q){ return (q.answer||'').split(',').map(s=>parseInt(s.trim())); }
+function isAllCorrect(q,sel){
+  const c=[...correctNums(q)].sort((a,b)=>a-b);
+  const s=[...sel].sort((a,b)=>a-b);
+  return JSON.stringify(c)===JSON.stringify(s);
+}
+function accuracy(){
+  const t=state.correct+state.incorrect;
+  return t>0?Math.round(state.correct/t*100):0;
+}
+
+function esc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function render(){
+  document.getElementById('hdr-count').textContent = `国家試験 リハ栄養問題集 / 全${QUIZ_DATA.length}問`;
+
+  if(state.showResults){ renderResults(); return; }
+
+  let html = '';
+
+  // Tabs
+  html += `<div class="tabs">
+    <button class="tab ${state.tab==='quiz'?'active':''}" onclick="setTab('quiz')">📝 問題を解く</button>
+    <button class="tab ${state.tab==='bookmarks'?'active':''}" onclick="setTab('bookmarks')">
+      ⭐ ブックマーク${Object.keys(state.bookmarks).length>0?` <span style="background:var(--gold);color:#fff;border-radius:99px;padding:1px 6px;font-size:.7rem;margin-left:4px">${Object.keys(state.bookmarks).length}</span>`:''}
+    </button>
+  </div>`;
+
+  if(state.tab==='bookmarks'){
+    html += renderBookmarks();
+  } else {
+    html += renderQuiz();
   }
-];
 
-// localStorage を使ってブックマークを永続化
-const BOOKMARK_KEY = 'kakomon_bookmarks_v1';
-
-function loadBookmarks() {
-    try {
-        const saved = localStorage.getItem(BOOKMARK_KEY);
-        return saved ? JSON.parse(saved) : {};
-    } catch { return {}; }
-}
-function saveBookmarks(bm) {
-    try { localStorage.setItem(BOOKMARK_KEY, JSON.stringify(bm)); } catch {}
+  app.innerHTML = html;
 }
 
-function downloadCSV(data) {
-    const headers = ['カテゴリー', '試験種別', '年度', '試験回', '問題文', 'サブ問題文', '選択肢1', '選択肢2', '選択肢3', '選択肢4', '選択肢5', '正答', '解説'];
-    const rows = data.map(q => [
-        q.category, q.exam, q.year, q.examRound,
-        q.question, q.question2 || '',
-        q.choices[0]||'', q.choices[1]||'', q.choices[2]||'', q.choices[3]||'', q.choices[4]||'',
-        q.answer, q.explanation||''
-    ].map(cell => '"' + String(cell).replace(/"/g, '""') + '"'));
-    const csv = '\uFEFF' + [headers.map(h=>'"'+h+'"'), ...rows].map(r=>r.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = '過去問チャレンジ.csv'; a.click();
-    URL.revokeObjectURL(url);
-}
-
-
-function QuizApp() {
-    const [tab, setTab] = useState('quiz'); // 'quiz' | 'bookmarks'
-    const [currentQuestions, setCurrentQuestions] = useState([]);
-    const [currentIdx, setCurrentIdx] = useState(0);
-    const [selectedAnswers, setSelectedAnswers] = useState([]);
-    const [answered, setAnswered] = useState(false);
-    const [stats, setStats] = useState({ correct: 0, incorrect: 0 });
-    const [categoryFilter, setCategoryFilter] = useState('all');
-    const [examFilter, setExamFilter] = useState('all');
-    const [quizMode, setQuizMode] = useState(false);
-    const [quizResults, setQuizResults] = useState([]);
-    const [showResults, setShowResults] = useState(false);
-    const [bookmarks, setBookmarks] = useState(loadBookmarks);
-    const [bookmarkAnim, setBookmarkAnim] = useState(false);
-    const [animKey, setAnimKey] = useState(0);
-
-    const categories = [...new Set(quizData.map(q => q.category).filter(Boolean))];
-    const exams = [...new Set(quizData.map(q => q.exam).filter(Boolean))];
-
-    const getFiltered = useCallback(() => {
-        return quizData.filter(q => {
-            const c = categoryFilter === 'all' || q.category === categoryFilter;
-            const e = examFilter === 'all' || q.exam === examFilter;
-            return c && e;
-        });
-    }, [categoryFilter, examFilter]);
-
-    const getQuestionId = (q) => `${q.exam}_${q.year}_${q.question.substring(0, 30)}`;
-
-    const toggleBookmark = (q) => {
-        const id = getQuestionId(q);
-        const newBm = { ...bookmarks };
-        if (newBm[id]) { delete newBm[id]; }
-        else { newBm[id] = q; }
-        setBookmarks(newBm);
-        saveBookmarks(newBm);
-        setBookmarkAnim(true);
-        setTimeout(() => setBookmarkAnim(false), 400);
-    };
-    const isBookmarked = (q) => !!bookmarks[getQuestionId(q)];
-
-    const startQuiz = () => {
-        const filtered = getFiltered();
-        if (!filtered.length) return;
-        const shuffled = [...filtered].sort(() => Math.random() - 0.5);
-        const selected = shuffled.slice(0, Math.min(5, shuffled.length));
-        setCurrentQuestions(selected);
-        setCurrentIdx(0);
-        setQuizMode(true);
-        setSelectedAnswers([]);
-        setAnswered(false);
-        setStats({ correct: 0, incorrect: 0 });
-        setQuizResults([]);
-        setShowResults(false);
-        setAnimKey(k => k+1);
-    };
-
-    const loadRandom = () => {
-        const filtered = getFiltered();
-        if (!filtered.length) return;
-        const q = filtered[Math.floor(Math.random() * filtered.length)];
-        setCurrentQuestions([q]);
-        setCurrentIdx(0);
-        setQuizMode(false);
-        setSelectedAnswers([]);
-        setAnswered(false);
-        setShowResults(false);
-        setAnimKey(k => k+1);
-    };
-
-    const loadBookmarkQuestion = (q) => {
-        setCurrentQuestions([q]);
-        setCurrentIdx(0);
-        setQuizMode(false);
-        setSelectedAnswers([]);
-        setAnswered(false);
-        setShowResults(false);
-        setTab('quiz');
-        setAnimKey(k => k+1);
-    };
-
-    const resetHome = () => {
-        setCurrentQuestions([]);
-        setCurrentIdx(0);
-        setQuizMode(false);
-        setSelectedAnswers([]);
-        setAnswered(false);
-        setStats({ correct: 0, incorrect: 0 });
-        setQuizResults([]);
-        setShowResults(false);
-    };
-
-    const currentQuestion = currentQuestions[currentIdx];
-
-    const getRequiredCount = () => {
-        if (!currentQuestion) return 1;
-        const t = currentQuestion.question + (currentQuestion.question2 || '');
-        if (t.includes('3つ選べ') || t.includes('3 つ選べ')) return 3;
-        if (t.includes('2つ選べ') || t.includes('2 つ選べ')) return 2;
-        return 1;
-    };
-
-    const selectAnswer = (num) => {
-        if (answered) return;
-        const req = getRequiredCount();
-        if (selectedAnswers.includes(num)) {
-            setSelectedAnswers(selectedAnswers.filter(a => a !== num));
-        } else {
-            if (selectedAnswers.length < req) {
-                setSelectedAnswers([...selectedAnswers, num]);
-            } else if (req === 1) {
-                setSelectedAnswers([num]);
-            }
-        }
-    };
-
-    const checkAnswer = () => {
-        if (!selectedAnswers.length || answered) return;
-        setAnswered(true);
-        const correct = currentQuestion.answer.split(',').map(s => parseInt(s.trim()));
-        const isOk = JSON.stringify([...selectedAnswers].sort()) === JSON.stringify([...correct].sort());
-        if (isOk) setStats(p => ({ ...p, correct: p.correct+1 }));
-        else setStats(p => ({ ...p, incorrect: p.incorrect+1 }));
-        if (quizMode) {
-            setQuizResults(p => [...p, { questionNum: currentIdx+1, isCorrect: isOk, question: currentQuestion.question.substring(0,60)+'...' }]);
-        }
-    };
-
-    const nextQuestion = () => {
-        if (quizMode && currentIdx < currentQuestions.length - 1) {
-            setCurrentIdx(currentIdx+1);
-            setSelectedAnswers([]);
-            setAnswered(false);
-            setAnimKey(k => k+1);
-        } else if (quizMode) {
-            setShowResults(true);
-        } else {
-            loadRandom();
-        }
-    };
-
-    const getCorrectNums = () => currentQuestion ? currentQuestion.answer.split(',').map(s => parseInt(s.trim())) : [];
-    const isCorrectAnswer = () => {
-        const correct = getCorrectNums();
-        return JSON.stringify([...selectedAnswers].sort()) === JSON.stringify([...correct].sort());
-    };
-
-    const accuracy = (stats.correct + stats.incorrect) > 0
-        ? Math.round((stats.correct / (stats.correct + stats.incorrect)) * 100) : 0;
-
-    const bookmarkList = Object.values(bookmarks);
-
-    // ===== RESULTS SCREEN =====
-    if (showResults) {
-        const finalAcc = Math.round((quizResults.filter(r => r.isCorrect).length / quizResults.length) * 100);
-        const correct5 = quizResults.filter(r => r.isCorrect).length;
-        return (
-            <div style={{ minHeight:'100vh', padding:'24px 16px', background:'var(--bg)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                <div className="card" style={{ maxWidth:600, width:'100%', padding:36, animation:'popIn 0.5s ease' }}>
-                    <div style={{ textAlign:'center', marginBottom:28 }}>
-                        <div style={{ fontSize:'2.5rem', marginBottom:12 }}>{finalAcc >= 80 ? '🎉' : finalAcc >= 60 ? '👍' : '📚'}</div>
-                        <h2 style={{ fontSize:'1.5rem', fontWeight:700, color:'var(--text-primary)', marginBottom:4 }}>5問チャレンジ完了！</h2>
-                        <p style={{ color:'var(--text-muted)', fontSize:'0.875rem' }}>お疲れさまでした</p>
-                    </div>
-                    <div style={{ background:'var(--accent-light)', borderRadius:12, padding:'24px 20px', textAlign:'center', marginBottom:28 }}>
-                        <div className="quiz-complete-score" style={{ marginBottom:8 }}>{finalAcc}%</div>
-                        <div style={{ fontSize:'1rem', color:'var(--text-secondary)' }}>
-                            <strong style={{ color:'var(--green)' }}>{correct5}</strong>問正解 / <strong style={{ color:'var(--red)' }}>{5-correct5}</strong>問不正解
-                        </div>
-                    </div>
-                    <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:28 }}>
-                        {quizResults.map((r, i) => (
-                            <div key={i} className={`result-row ${r.isCorrect ? 'correct-row' : 'incorrect-row'}`}>
-                                <span style={{ fontSize:'1.1rem' }}>{r.isCorrect ? '✓' : '✗'}</span>
-                                <div style={{ flex:1 }}>
-                                    <span style={{ fontWeight:600, color: r.isCorrect ? 'var(--green)' : 'var(--red)', marginRight:8 }}>問題{r.questionNum}</span>
-                                    <span style={{ color:'var(--text-secondary)', fontSize:'0.8rem' }}>{r.question}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-                        <button className="btn btn-primary" style={{ width:'100%' }} onClick={startQuiz}>もう一度挑戦</button>
-                        <button className="btn btn-secondary" style={{ width:'100%' }} onClick={resetHome}>最初の画面へ</button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    return (
-        <div style={{ minHeight:'100vh', background:'var(--bg)', padding:'0 0 48px' }}>
-            {/* HEADER */}
-            <div style={{
-                background:'var(--surface)',
-                borderBottom:'1px solid var(--border)',
-                padding:'20px 16px',
-                textAlign:'center',
-                boxShadow:'0 1px 6px rgba(0,0,0,0.06)',
-                position:'sticky', top:0, zIndex:10
-            }}>
-                <div style={{ maxWidth:760, margin:'0 auto' }}>
-                    <h1 style={{ fontSize:'1.6rem', fontWeight:700, color:'var(--text-primary)', letterSpacing:'-0.02em' }}>
-                        過去問チャレンジ
-                    </h1>
-                    <p style={{ fontSize:'0.78rem', color:'var(--text-muted)', marginTop:2 }}>
-                        国家試験 リハ栄養問題集 / 全{quizData.length}問
-                    </p>
-                </div>
-            </div>
-
-            <div style={{ maxWidth:760, margin:'0 auto', padding:'20px 16px' }}>
-                {/* TAB */}
-                <div className="tab-bar" style={{ marginBottom:20 }}>
-                    <button className={`tab ${tab==='quiz'?'active':''}`} onClick={() => setTab('quiz')}>📝 問題を解く</button>
-                    <button className={`tab ${tab==='bookmarks'?'active':''}`} onClick={() => setTab('bookmarks')}>
-                        ⭐ ブックマーク {bookmarkList.length > 0 && <span style={{ background:'var(--gold)', color:'white', borderRadius:99, padding:'1px 6px', fontSize:'0.7rem', marginLeft:4 }}>{bookmarkList.length}</span>}
-                    </button>
-                </div>
-
-                {/* ===== BOOKMARK TAB ===== */}
-                {tab === 'bookmarks' && (
-                    <div style={{ animation:'fadeInUp 0.35s ease' }}>
-                        {bookmarkList.length === 0 ? (
-                            <div className="card" style={{ padding:0 }}>
-                                <div className="empty-state">
-                                    <div className="empty-icon">⭐</div>
-                                    <p style={{ fontWeight:600, marginBottom:6 }}>ブックマークがありません</p>
-                                    <p style={{ fontSize:'0.875rem' }}>問題を解いて「⭐」ボタンで追加しましょう</p>
-                                </div>
-                            </div>
-                        ) : (
-                            <div>
-                                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
-                                    <div className="section-label">{bookmarkList.length}件のブックマーク</div>
-                                    <button className="btn btn-ghost" style={{ fontSize:'0.78rem', padding:'6px 12px' }}
-                                        onClick={() => { if (window.confirm('ブックマークをすべて削除しますか？')) { setBookmarks({}); saveBookmarks({}); } }}>
-                                        クリア
-                                    </button>
-                                </div>
-                                <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                                    {bookmarkList.map((q, i) => (
-                                        <div key={i} className="bookmark-item" onClick={() => loadBookmarkQuestion(q)}>
-                                            <div style={{ minWidth:32, height:32, background:'var(--yellow-light)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'1rem' }}>⭐</div>
-                                            <div style={{ flex:1, minWidth:0 }}>
-                                                <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:5 }}>
-                                                    <span className="badge badge-purple">{q.category}</span>
-                                                    <span className="badge badge-blue">{q.exam}</span>
-                                                    <span className="badge badge-yellow">{q.year}</span>
-                                                </div>
-                                                <p style={{ fontSize:'0.83rem', color:'var(--text-primary)', lineHeight:1.5, overflow:'hidden', display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical' }}>
-                                                    {q.question}
-                                                </p>
-                                            </div>
-                                            <span style={{ color:'var(--text-muted)', fontSize:'1rem', flexShrink:0 }}>›</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                {/* ===== QUIZ TAB ===== */}
-                {tab === 'quiz' && (
-                    <div>
-                        {/* CONTROLS */}
-                        <div className="card" style={{ padding:20, marginBottom:20, animation:'fadeIn 0.4s ease' }}>
-                            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:16 }}>
-                                <div>
-                                    <div className="section-label" style={{ marginBottom:6 }}>カテゴリー</div>
-                                    <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}>
-                                        <option value="all">すべて</option>
-                                        {categories.map(c => <option key={c} value={c}>{c}</option>)}
-                                    </select>
-                                </div>
-                                <div>
-                                    <div className="section-label" style={{ marginBottom:6 }}>試験種別</div>
-                                    <select value={examFilter} onChange={e => setExamFilter(e.target.value)}>
-                                        <option value="all">すべて</option>
-                                        {exams.map(e => <option key={e} value={e}>{e}</option>)}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:10 }}>
-                                <button className="btn btn-primary" style={{ width:'100%' }} onClick={startQuiz}>🎯 5問チャレンジ</button>
-                                <button className="btn btn-secondary" style={{ width:'100%' }} onClick={loadRandom}>🎲 ランダム1問</button>
-                            </div>
-                            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:16 }}>
-                                <button className="btn btn-ghost" style={{ width:'100%', fontSize:'0.82rem' }} onClick={() => downloadCSV(getFiltered())}>
-                                    ⬇️ 絞り込み中の問題をCSV保存
-                                </button>
-                                <button className="btn btn-ghost" style={{ width:'100%', fontSize:'0.82rem' }} onClick={() => downloadCSV(quizData)}>
-                                    ⬇️ 全問題をCSV保存
-                                </button>
-                            </div>
-
-                            <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10 }}>
-                                <div className="stat-card"><div className="stat-value" style={{ color:'var(--green)' }}>{stats.correct}</div><div className="stat-label">正解数</div></div>
-                                <div className="stat-card"><div className="stat-value" style={{ color:'var(--red)' }}>{stats.incorrect}</div><div className="stat-label">不正解数</div></div>
-                                <div className="stat-card"><div className="stat-value">{accuracy}%</div><div className="stat-label">正答率</div></div>
-                            </div>
-                        </div>
-
-                        {/* INFO BOX */}
-                        {!currentQuestion && (
-                            <div className="card" style={{ padding:24, animation:'fadeIn 0.4s ease' }}>
-                                <p style={{ fontSize:'0.875rem', color:'var(--text-secondary)', lineHeight:1.8, marginBottom:16 }}>
-                                    国家試験過去問から「リハ栄養」に関連する問題を集めました。カテゴリーフィルターで目的に応じて絞り込めます。<br/><br/>
-                                    <strong>基本問題（多職種共通）</strong>：職種を問わず共通理解が重要な問題（16問）<br/>
-                                    <strong>専門</strong>：より専門性・計算・詳細知識が求められる問題（8問）
-                                </p>
-                                <p style={{ fontSize:'0.8rem', color:'var(--text-muted)', marginTop:12, textAlign:'center' }}>
-                                    ⭐ ボタンで問題をブックマークに追加できます
-                                </p>
-                            </div>
-                        )}
-
-                        {/* QUESTION CARD */}
-                        {currentQuestion && (
-                            <div key={animKey} className="card" style={{ padding:'24px 20px', animation:'fadeInUp 0.4s ease' }}>
-                                {/* Progress bar (quiz mode) */}
-                                {quizMode && (
-                                    <div>
-                                        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
-                                            <span style={{ fontSize:'0.8rem', fontWeight:600, color:'var(--accent)' }}>問題 {currentIdx+1} / {currentQuestions.length}</span>
-                                            <button className="btn btn-ghost" style={{ padding:'5px 10px', fontSize:'0.75rem' }} onClick={resetHome}>中断</button>
-                                        </div>
-                                        <div className="progress-bar-container">
-                                            <div className="progress-bar-fill" style={{ width:`${((currentIdx+1)/currentQuestions.length)*100}%` }} />
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Badges + Bookmark */}
-                                <div style={{ display:'flex', alignItems:'flex-start', gap:8, marginBottom:16 }}>
-                                    <div style={{ display:'flex', flexWrap:'wrap', gap:6, flex:1 }}>
-                                        {currentQuestion.category && <span className="badge badge-purple">{currentQuestion.category}</span>}
-                                        {currentQuestion.exam && <span className="badge badge-blue">{currentQuestion.exam}</span>}
-                                        {currentQuestion.examRound && <span className="badge badge-gold">{currentQuestion.examRound}</span>}
-                                        {currentQuestion.year && <span className="badge badge-yellow">{currentQuestion.year}</span>}
-                                    </div>
-                                    <button
-                                        className={`bookmark-btn ${isBookmarked(currentQuestion)?'bookmarked':''}`}
-                                        onClick={() => toggleBookmark(currentQuestion)}
-                                        title={isBookmarked(currentQuestion)?'ブックマーク解除':'ブックマーク追加'}
-                                        style={{ animation: bookmarkAnim && isBookmarked(currentQuestion) ? 'bookmarkPop 0.35s ease' : 'none' }}
-                                    >
-                                        {isBookmarked(currentQuestion) ? '⭐' : '☆'}
-                                    </button>
-                                </div>
-
-                                {/* Question text */}
-                                <div style={{ fontSize:'0.95rem', lineHeight:1.8, color:'var(--text-primary)', marginBottom:16, whiteSpace:'pre-wrap' }}>
-                                    {currentQuestion.question}
-                                </div>
-                                {currentQuestion.question2 && (
-                                    <div style={{ fontSize:'0.875rem', lineHeight:1.75, color:'var(--text-secondary)', marginBottom:16, whiteSpace:'pre-wrap', padding:'10px 14px', background:'var(--surface2)', borderRadius:8, borderLeft:'3px solid var(--accent)' }}>
-                                        {currentQuestion.question2}
-                                    </div>
-                                )}
-
-                                {/* Select count hint */}
-                                {getRequiredCount() > 1 && !answered && (
-                                    <div style={{ marginBottom:14, padding:'10px 14px', background:'var(--accent-light)', borderRadius:8, fontSize:'0.82rem', color:'var(--accent)', fontWeight:500 }}>
-                                        📌 {getRequiredCount()}つ選択してください（{selectedAnswers.length}/{getRequiredCount()}）
-                                    </div>
-                                )}
-
-                                {/* Choices */}
-                                <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:20 }}>
-                                    {currentQuestion.choices.map((choice, idx) => {
-                                        const num = idx+1;
-                                        const sel = selectedAnswers.includes(num);
-                                        const corr = answered && getCorrectNums().includes(num);
-                                        const wrong = answered && sel && !getCorrectNums().includes(num);
-                                        return (
-                                            <div key={idx}
-                                                className={`choice-item ${sel&&!answered?'selected':''} ${corr?'correct':''} ${wrong?'incorrect':''} ${answered?'disabled':''}`}
-                                                onClick={() => selectAnswer(num)}
-                                            >
-                                                <div className="choice-num">{num}</div>
-                                                <span style={{ fontSize:'0.9rem', lineHeight:1.65, color:'var(--text-primary)' }}>{choice}</span>
-                                                {corr && <span style={{ marginLeft:'auto', fontSize:'1.1rem', flexShrink:0 }}>✓</span>}
-                                                {wrong && <span style={{ marginLeft:'auto', fontSize:'1.1rem', flexShrink:0 }}>✗</span>}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-
-                                {/* Action buttons */}
-                                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-                                    <button className="btn btn-primary" disabled={!selectedAnswers.length || answered} onClick={checkAnswer}>
-                                        ✓ 解答を確認
-                                    </button>
-                                    <button className="btn btn-secondary" onClick={nextQuestion}>
-                                        {quizMode && currentIdx < currentQuestions.length-1 ? '次の問題 ›' : '別の問題 ›'}
-                                    </button>
-                                </div>
-
-                                {/* Result banner */}
-                                {answered && (
-                                    <div style={{ marginTop:20 }}>
-                                        <div className={`result-banner ${isCorrectAnswer()?'correct-banner':'incorrect-banner'}`}>
-                                            <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom: (!isCorrectAnswer() || (currentQuestion.explanation && currentQuestion.explanation !== '（検討中）')) ? 12 : 0 }}>
-                                                <span style={{ fontSize:'1.5rem' }}>{isCorrectAnswer()?'✓':'✗'}</span>
-                                                <span style={{ fontWeight:700, fontSize:'1rem', color: isCorrectAnswer()?'var(--green)':'var(--red)' }}>
-                                                    {isCorrectAnswer() ? '正解です！' : '不正解です'}
-                                                </span>
-                                                {!isCorrectAnswer() && (
-                                                    <span style={{ fontSize:'0.875rem', color:'var(--text-secondary)', marginLeft:'auto' }}>
-                                                        正解：<strong style={{ color:'var(--green)' }}>{getCorrectNums().join(', ')}番</strong>
-                                                    </span>
-                                                )}
-                                            </div>
-
-                                            {/* Explanation */}
-                                            {currentQuestion.explanation && currentQuestion.explanation !== '（検討中）' ? (
-                                                <div className="explanation-box">
-                                                    <div className="expl-title">
-                                                        <span>💡</span> 解説
-                                                    </div>
-                                                    <div style={{ whiteSpace:'pre-wrap' }}>{currentQuestion.explanation}</div>
-                                                </div>
-                                            ) : currentQuestion.explanation === '（検討中）' ? (
-                                                <div className="explanation-box explanation-pending">
-                                                    📝 解説は現在作成中です
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+function renderBookmarks(){
+  const list = Object.values(state.bookmarks);
+  if(list.length===0){
+    return `<div class="card"><div class="empty"><div style="font-size:3rem;margin-bottom:12px">⭐</div><p style="font-weight:600;margin-bottom:6px">ブックマークがありません</p><p style="font-size:.875rem">問題を解いて「☆」ボタンで追加しましょう</p></div></div>`;
+  }
+  let html = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <div class="section-lbl">${list.length}件のブックマーク</div>
+    <button class="btn btn-ghost" style="width:auto;padding:5px 12px;font-size:.78rem" onclick="clearBM()">クリア</button>
+  </div><div style="display:flex;flex-direction:column;gap:8px">`;
+  list.forEach((q,i)=>{
+    html += `<div class="bm-item" onclick="loadBMQuestion(${i})">
+      <div style="min-width:32px;height:32px;background:var(--yellow-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem">⭐</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px">
+          <span class="badge badge-purple">${esc(q.category)}</span>
+          <span class="badge badge-blue">${esc(q.profession)}</span>
+          <span class="badge badge-yellow">${esc(q.year)}</span>
         </div>
-    );
+        <p style="font-size:.82rem;color:var(--text);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${esc(q.question)}</p>
+      </div>
+      <span style="color:var(--muted);flex-shrink:0">›</span>
+    </div>`;
+  });
+  html += '</div>';
+  return html;
 }
 
-ReactDOM.render(<QuizApp />, document.getElementById('root'));
+function renderQuiz(){
+  let html = '';
+
+  // Controls card
+  html += `<div class="card" style="padding:18px;margin-bottom:18px">
+    <div class="grid2" style="margin-bottom:14px">
+      <div><div class="section-lbl">カテゴリー</div>
+        <select onchange="state.catFilter=this.value;render()">
+          <option value="all"${state.catFilter==='all'?' selected':''}>すべて</option>
+          ${categories().map(c=>`<option value="${esc(c)}"${state.catFilter===c?' selected':''}>${esc(c)}</option>`).join('')}
+        </select>
+      </div>
+      <div><div class="section-lbl">職種</div>
+        <select onchange="state.examFilter=this.value;render()">
+          <option value="all"${state.examFilter==='all'?' selected':''}>すべて</option>
+          ${professions().map(p=>`<option value="${esc(p)}"${state.examFilter===p?' selected':''}>${esc(p)}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="grid2" style="margin-bottom:14px">
+      <button class="btn btn-primary" onclick="startQuiz()">🎯 5問チャレンジ</button>
+      <button class="btn btn-secondary" onclick="loadRandom()">🎲 ランダム1問</button>
+    </div>
+    <div class="grid3">
+      <div class="stat-card"><div class="stat-val" style="color:var(--green)">${state.correct}</div><div class="stat-lbl">正解数</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--red)">${state.incorrect}</div><div class="stat-lbl">不正解数</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${accuracy()}%</div><div class="stat-lbl">正答率</div></div>
+    </div>
+  </div>`;
+
+  const q = state.questions[state.qIdx];
+
+  if(!q){
+    html += `<div class="card" style="padding:28px;text-align:center">
+      <p style="color:var(--text2);margin-bottom:10px">上のボタンから問題を開始してください</p>
+      <p style="font-size:.82rem;color:var(--muted)">⭐ ボタンで問題をブックマークに追加できます</p>
+      <div style="margin-top:16px;background:var(--surface2);border-radius:8px;padding:14px;font-size:.82rem;color:var(--text2);line-height:1.8;text-align:left">
+        <strong style="color:var(--text)">カテゴリーについて</strong><br>
+        ・<strong>基本問題（多職種共通）</strong>：職種を問わず共通理解が重要な問題<br>
+        ・<strong>専門的な問題</strong>：より専門性・計算・詳細知識が求められる問題
+      </div>
+    </div>`;
+    return html;
+  }
+
+  const req = reqCount(q);
+  const cNums = correctNums(q);
+  const bmed = !!state.bookmarks[qId(q)];
+
+  html += `<div class="card anim-up" style="padding:22px 18px" id="qcard">`;
+
+  // Quiz mode progress
+  if(state.quizMode){
+    const pct = ((state.qIdx+1)/state.questions.length)*100;
+    html += `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-size:.8rem;font-weight:600;color:var(--accent)">問題 ${state.qIdx+1} / ${state.questions.length}</span>
+      <button class="btn btn-ghost" style="width:auto;padding:5px 10px;font-size:.75rem" onclick="resetHome()">中断</button>
+    </div>
+    <div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>`;
+  }
+
+  // Badges + bookmark
+  html += `<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:14px">
+    <div style="display:flex;flex-wrap:wrap;gap:5px;flex:1">
+      ${q.category?`<span class="badge badge-purple">${esc(q.category)}</span>`:''}
+      ${q.profession?`<span class="badge badge-blue">${esc(q.profession)}</span>`:''}
+      ${q.examRound?`<span class="badge badge-gold">${esc(q.examRound)}</span>`:''}
+      ${q.year?`<span class="badge badge-yellow">${esc(q.year)}</span>`:''}
+    </div>
+    <button class="bm-btn ${bmed?'on':''}" onclick="toggleBM()" title="${bmed?'ブックマーク解除':'ブックマーク追加'}">${bmed?'⭐':'☆'}</button>
+  </div>`;
+
+  // Question text
+  html += `<div style="font-size:.95rem;line-height:1.8;color:var(--text);margin-bottom:14px;white-space:pre-wrap">${esc(q.question)}</div>`;
+  if(q.question2) html += `<div class="q2-box">${esc(q.question2)}</div>`;
+
+  // Hint
+  if(req>1 && !state.answered){
+    html += `<div class="hint">📌 ${req}つ選択してください（${state.selected.length}/${req}）</div>`;
+  }
+
+  // Choices
+  html += `<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px">`;
+  q.choices.forEach((choice,idx)=>{
+    const num = idx+1;
+    const sel = state.selected.includes(num);
+    const corr = state.answered && cNums.includes(num);
+    const wrong = state.answered && sel && !cNums.includes(num);
+    let cls = 'choice';
+    if(sel && !state.answered) cls += ' selected';
+    if(corr) cls += ' correct';
+    if(wrong) cls += ' incorrect';
+    if(state.answered) cls += ' disabled';
+    html += `<div class="${cls}" onclick="selectChoice(${num})">
+      <div class="choice-num">${num}</div>
+      <span style="font-size:.9rem;line-height:1.65;flex:1">${esc(choice)}</span>
+      ${corr?'<span style="margin-left:auto;flex-shrink:0">✓</span>':''}
+      ${wrong?'<span style="margin-left:auto;flex-shrink:0">✗</span>':''}
+    </div>`;
+  });
+  html += '</div>';
+
+  // Buttons
+  const nextLabel = state.quizMode && state.qIdx < state.questions.length-1 ? '次の問題 ›' : '別の問題 ›';
+  html += `<div class="grid2">
+    <button class="btn btn-primary" onclick="checkAnswer()" ${!state.selected.length||state.answered?'disabled':''}>✓ 解答を確認</button>
+    <button class="btn btn-secondary" onclick="nextQuestion()">${nextLabel}</button>
+  </div>`;
+
+  // Result
+  if(state.answered){
+    const ok = isAllCorrect(q, state.selected);
+    html += `<div style="margin-top:18px"><div class="result-banner ${ok?'ok':'ng'} anim-pop">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:${q.explanation&&q.explanation!=='（検討中）'?'10px':'0'}">
+        <span style="font-size:1.4rem">${ok?'✓':'✗'}</span>
+        <span style="font-weight:700;font-size:1rem;color:${ok?'var(--green)':'var(--red)'}">${ok?'正解です！':'不正解です'}</span>
+        ${!ok?`<span style="font-size:.875rem;color:var(--text2);margin-left:auto">正解：<strong style="color:var(--green)">${cNums.join(', ')}番</strong></span>`:''}
+      </div>`;
+    if(q.explanation && q.explanation !== '（検討中）'){
+      html += `<div class="expl-box"><div class="expl-title">💡 解説</div>${esc(q.explanation)}</div>`;
+    } else if(q.explanation === '（検討中）'){
+      html += `<div class="expl-box expl-pending">📝 解説は現在作成中です</div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  html += '</div>'; // card
+  return html;
+}
+
+function renderResults(){
+  const total = state.results.length;
+  const okCount = state.results.filter(r=>r.ok).length;
+  const pct = Math.round(okCount/total*100);
+  let html = `<div class="card anim-pop" style="padding:32px;text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:12px">${pct>=80?'🎉':pct>=60?'👍':'📚'}</div>
+    <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:4px">5問チャレンジ完了！</h2>
+    <p style="color:var(--muted);font-size:.875rem;margin-bottom:20px">お疲れさまでした</p>
+    <div style="background:var(--accent-l);border-radius:10px;padding:20px;margin-bottom:24px">
+      <div class="score-big" style="margin-bottom:6px">${pct}%</div>
+      <div style="font-size:1rem;color:var(--text2)"><strong style="color:var(--green)">${okCount}</strong>問正解 / <strong style="color:var(--red)">${total-okCount}</strong>問不正解</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:24px;text-align:left">`;
+  state.results.forEach((r,i)=>{
+    html += `<div class="result-row ${r.ok?'ok':'ng'}">
+      <span style="font-size:1rem">${r.ok?'✓':'✗'}</span>
+      <div style="flex:1"><span style="font-weight:600;color:${r.ok?'var(--green)':'var(--red)'};margin-right:6px">問題${i+1}</span>
+      <span style="font-size:.78rem;color:var(--text2)">${esc(r.q.slice(0,60))}...</span></div>
+    </div>`;
+  });
+  html += `</div>
+    <div class="grid2">
+      <button class="btn btn-primary" onclick="startQuiz()">もう一度挑戦</button>
+      <button class="btn btn-secondary" onclick="resetHome()">最初の画面へ</button>
+    </div>
+  </div>`;
+  app.innerHTML = html;
+}
+
+// Actions
+function setTab(t){ state.tab=t; render(); }
+
+function startQuiz(){
+  const f=filtered();
+  if(!f.length) return;
+  const shuffled=[...f].sort(()=>Math.random()-.5).slice(0,Math.min(5,f.length));
+  state.questions=shuffled; state.qIdx=0; state.quizMode=true;
+  state.selected=[]; state.answered=false;
+  state.correct=0; state.incorrect=0;
+  state.results=[]; state.showResults=false;
+  render();
+}
+
+function loadRandom(){
+  const f=filtered();
+  if(!f.length) return;
+  state.questions=[f[Math.floor(Math.random()*f.length)]];
+  state.qIdx=0; state.quizMode=false;
+  state.selected=[]; state.answered=false; state.showResults=false;
+  render();
+}
+
+function selectChoice(num){
+  if(state.answered) return;
+  const req=reqCount(state.questions[state.qIdx]);
+  if(state.selected.includes(num)){
+    state.selected=state.selected.filter(n=>n!==num);
+  } else {
+    if(state.selected.length<req) state.selected=[...state.selected,num];
+    else if(req===1) state.selected=[num];
+  }
+  render();
+}
+
+function checkAnswer(){
+  if(!state.selected.length||state.answered) return;
+  state.answered=true;
+  const q=state.questions[state.qIdx];
+  const ok=isAllCorrect(q,state.selected);
+  if(ok) state.correct++; else state.incorrect++;
+  if(state.quizMode) state.results.push({ok, q:q.question});
+  render();
+}
+
+function nextQuestion(){
+  if(state.quizMode && state.qIdx<state.questions.length-1){
+    state.qIdx++; state.selected=[]; state.answered=false; render();
+  } else if(state.quizMode){
+    state.showResults=true; render();
+  } else {
+    loadRandom();
+  }
+}
+
+function resetHome(){
+  state.questions=[]; state.qIdx=0; state.quizMode=false;
+  state.selected=[]; state.answered=false;
+  state.correct=0; state.incorrect=0;
+  state.results=[]; state.showResults=false;
+  render();
+}
+
+function toggleBM(){
+  const q=state.questions[state.qIdx];
+  if(!q) return;
+  const id=qId(q);
+  const bm={...state.bookmarks};
+  if(bm[id]) delete bm[id]; else bm[id]=q;
+  state.bookmarks=bm; saveBM(bm); render();
+}
+
+function loadBMQuestion(i){
+  const q=Object.values(state.bookmarks)[i];
+  state.questions=[q]; state.qIdx=0; state.quizMode=false;
+  state.selected=[]; state.answered=false; state.showResults=false;
+  state.tab='quiz'; render();
+}
+
+function clearBM(){
+  if(confirm('ブックマークをすべて削除しますか？')){
+    state.bookmarks={}; saveBM({});  render();
+  }
+}
+
+render();
 </script>
 </body>
 </html>
